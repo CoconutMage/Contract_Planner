@@ -3,8 +3,7 @@
 	<head>
 	<head>
 	<body>
-		<h1>Hello World</h1>
-		<p>I'm not hosted with GitHub Pages.</p>
+		<h1>Projects</h1>
 		<button type="button" onclick="revealMessage()">Click for JavaScript execution!</button>
 		<div id="hiddenMessage" style="display:none">
 			<p>This is a test message!</p>
@@ -12,13 +11,25 @@
 			<button type="button" id="countUpButton" onclick="countUp()">Click to increment</button>
 			<button type="button" id="countDownButton" onclick="countDown()">Click to decrement</button>
 		</div>
-			<button type="button" id="test" onclick="test()">Click to Bazinga</button>
+			<button type="button" id="test" onclick="generateTable()">Click to Bazinga</button>
+			<button type="button" id="test" onclick="addTableRow()">Click add new row</button>
+			<button type="button" id="test" onclick="removeTableRow()">Click to remove row</button>
 		<div id="reactContainer"></div>
 
 		<table id = "bazingaTable">
-		<thead></thead>
+		<thead> <button type="button" class="collapsible">Active</button></thead>
 		<tbody id = "Bazinga"></tbody>
 		</table>
+    <table id = "bazingaTable2">
+		<thead> <button type="button" class="collapsible">Proposals</button></thead>
+		<tbody id = "Bazinga2"></tbody>
+		</table>
+    <table id = "bazingaTable3">
+		<thead> <button type="button" class="collapsible">Completed</button></thead>
+		<tbody id = "Bazinga3"></tbody>
+		</table>
+
+
 		
 		<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
 		<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>

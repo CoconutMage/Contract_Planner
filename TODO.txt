@@ -1,0 +1,24 @@
+Project page 
+1-be able to add new projects 
+2-have 3 categories, active, proposal & completed which we can change when for instance a proposal becomes active or active is completed 
+Project overview
+1-should have full finance information total cost-expenses-payments 
+2 it should have the estimate on the page as well 
+3-add payments as well and show total due 
+
+Estimate 
+1-it should have a drop-down menu list of items that we can always add to and be able to check off what items will be added to the estimate 
+2-once added each line item chosen should have a drop-down option called change orders that should be endless so we can add each change individually 
+3-it should have line item-quantity -cost-subtractor fee-material cost and total (of the cost) then total of sub and materials then a total cost after deducting sub and materials from total and notes 
+4-it should have the option of adding the % or flat free when entering the cost 
+5-when adding the subcontractor or materials there should be an option to add the subs info and attach a file and add multiple subs and materials for each line item
+6-on the bottom of the page should have a quick overview of sub and material cost as well as project total and payments 
+7-sub and materials should have an option to check off “paid” 
+8-it should save all info after 30 seconds or manually save 
+9-the line items should be numbered, and we should have the option of adjusting the order of the line items 
+
+Proposal
+1-proposals should be generated from the estimate but should only include line items-quantity and cost and total (it should not have any sub or material info).
+2-it should have an option under each line item to create a note 
+3-it should turn into a pdf and have the option to print 
+4-it should show and deduct any payments made from the total. Total-payment amount-final total 
