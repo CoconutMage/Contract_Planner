@@ -49,6 +49,7 @@ db.serialize(() => {
 	
 //db.run("INSERT INTO BudgetEstimate SET Item = Bazinga WHERE rowid = 1");
 
+/*
 db.run("INSERT INTO 'Budget Estimate'(Item) VALUES (:col)", {
   ':1': 'Bazinga'
 });
