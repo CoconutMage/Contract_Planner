@@ -45,10 +45,21 @@ function connectWebsocket(server)
 //Database shenanigans, I think I mostly know whats going on here
 db.serialize(() => {
 
-	db.run("CREATE TABLE Active_Projects");
-	const stmt = db.prepare("INSERT INTO Active_Projects VALUES (?)");
-	stmt.run("Project 1");
+//const result = await db.get('SELECT col FROM tbl WHERE col = ?', 'test')
+	
+//db.run("INSERT INTO BudgetEstimate SET Item = Bazinga WHERE rowid = 1");
 
+const result = await db.run('INSERT INTO tbl(col) VALUES (:col)', {
+  ':col': 'something'
+});
+
+	
+
+	//console.log(db.get("SELECT * FROM 'Budget Estimate' WHERE rowid = 0"));
+	    db.each("SELECT rowid AS id, Item FROM 'Budget Estimate'", (err, row) => {
+        console.log(row.id + ": " + row.Item);
+				console.log(err);
+			});
 	
 	/*
     db.run("CREATE TABLE lorem (info TEXT)");
@@ -77,10 +88,3 @@ db.close();
 app.get('/script.js', function(req, res){
     res.sendFile(__dirname + '/script.js');
 });*/
-
-
-
-
-//console.log('Server started at http://localhost/:' + port);
-//console.log("Database?: " + process.env.REPLIT_DB_URL)
-//Bazinga
