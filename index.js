@@ -49,13 +49,14 @@ db.serialize(() => {
 	
 //db.run("INSERT INTO BudgetEstimate SET Item = Bazinga WHERE rowid = 1");
 
-const result = await db.run('INSERT INTO tbl(col) VALUES (:col)', {
-  ':col': 'something'
+db.run("INSERT INTO 'Budget Estimate'(Item) VALUES (:col)", {
+  ':1': 'Bazinga'
 });
 
 	
 
 	//console.log(db.get("SELECT * FROM 'Budget Estimate' WHERE rowid = 0"));
+console.log("It got here");
 	    db.each("SELECT rowid AS id, Item FROM 'Budget Estimate'", (err, row) => {
         console.log(row.id + ": " + row.Item);
 				console.log(err);
