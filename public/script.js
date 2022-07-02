@@ -31,9 +31,14 @@ function websocket()
 	};
 }
 
+
+function Bazanga()
+{
+	console.log("Bazung");
+}
 function revealMessage()
 {
-	document.getElementById("hiddenMessage").style.display = "block";
+	document.getElementById("hiddenMessage").style.display = 'block';
 }
 function countUp()
 {
