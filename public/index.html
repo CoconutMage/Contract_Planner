@@ -1,22 +1,51 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<script src="/script.js"></script>
 	<head>
-	<body>
-		<h1>Hello World</h1>
-		<p>I'm hosted with GitHub Pages.</p>
-		<button type="button" onclick="revealMessage()">Click for JavaScript execution!</button>
+	<body onload="Start()">
+		<h1>Projects</h1>
+		<button type="button" onclick="revealMessage()" style="display:none">Click for JavaScript execution!</button>
 		<div id="hiddenMessage" style="display:none">
 			<p>This is a test message!</p>
 			<p id="counterText">5</p>
 			<button type="button" id="countUpButton" onclick="countUp()">Click to increment</button>
 			<button type="button" id="countDownButton" onclick="countDown()">Click to decrement</button>
 		</div>
-		<div id="reactContainer"></div>
+    <div style="display:none">
+			<button type="button" id="test" onclick="generateTable()" >Click to Bazinga</button>
+			<button type="button" id="test" onclick="addTableRow()" >Click add new row</button>
+			<button type="button" id="test" onclick="removeTableRow()" >Click to remove row</button>
+	</div>
+
+	<div id="reactContainer"></div>
+
+	<div id="projectList" class="projectListing">
+		<span>1064 Shillelagh rd</span>
+		<span input type="button" onclick="Bazanga()">Button</span>
+	</div>
+	<table id = "bazingaTable" style="display:none">
+		<thead> <button type="button" class="collapsible">Active</button></thead>
+
+		<tbody id = "Bazinga"></tbody>
+	</table>
+
+    <table id = "bazingaTable2" style="display:none">
+		<thead> <button type="button" class="collapsible">Proposals</button></thead>
+		<tbody id = "Bazinga2"></tbody>
+	</table>
+
+    <table id = "bazingaTable3" style="display:none">
+		<thead> <button type="button" class="collapsible">Completed</button></thead>
+		<tbody id = "Bazinga3"></tbody>
+	</table>
+
+		<button type="button" class="anybutton" onclick="Bazanga()">Add Project</button>
 		
-		<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+		<!--<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
 		<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-		<script src="js/react_like_button.js"></script>
+		<script src="js/react_like_button.js"></script>-->
+		
+		<script src="/script.js"></script>
+		<link rel="stylesheet" type="text/css" href="/index.css" />
 	</body>
 </html>

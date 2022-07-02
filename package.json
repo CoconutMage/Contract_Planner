@@ -1,7 +1,6 @@
 {
   "name": "contractplanner",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,6 +9,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.1"
-  }
+    "express": "^4.18.1",
+    "http": "^0.0.1-security",
+    "path": "^0.12.7",
+    "sqlite": "^4.1.1",
+    "sqlite3": "^5.0.8",
+    "ws": "^8.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CoconutMage/Contract_Planner.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CoconutMage/Contract_Planner/issues"
+  },
+  "homepage": "https://github.com/CoconutMage/Contract_Planner#readme",
+  "description": ""
 }
