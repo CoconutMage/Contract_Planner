@@ -3,6 +3,8 @@
 	<head>
 	</head>
 	<body onload="Start()">
+		<button type="button" onclick="toggle()">Switch</button>
+		<div id="TheBigOne">
 		<button type="button" onclick="revealMessage()" style="display:none">Click for JavaScript execution!</button>
 		<div id="hiddenMessage" style="display:none">
 			<p>This is a test message!</p>
@@ -43,7 +45,7 @@
 	<button type="button" class="collapsible">Active</button>
 	<button type="button" class="collapsible">Proposals</button>
 	<button type="button" class="collapsible">Completed</button>
-	<button type="button" class="anybutton" onclick="Bazanga()">Add Project</button>
+	<!--<button type="button" class="anybutton" onclick="Bazanga()">Add Project</button>-->
 
 	<!--
 	<table id = "bazingaTable" style="display:none">
@@ -62,13 +64,14 @@
 		<tbody id = "Bazinga3"></tbody>
 	</table>-->
 
-		<button type="button" class="anybutton" onclick="Bazanga()">Add Project</button>
+		<!--<button type="button" class="anybutton" onclick="Bazanga()">Add Project</button>-->
 
 		<!--<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
 		<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
 		<script src="js/react_like_button.js"></script>-->
 
-		<table>
+		</div>
+		<table id = "procTable" style="display:none">
 			<thead id = "tableHead"></thead>
 			<tbody id = "tableData"></tbody>
 		</table>
