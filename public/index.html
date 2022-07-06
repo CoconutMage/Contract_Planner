@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
 	<head>
-	<head>
+	</head>
 	<body onload="Start()">
-		<h1>Projects</h1>
 		<button type="button" onclick="revealMessage()" style="display:none">Click for JavaScript execution!</button>
 		<div id="hiddenMessage" style="display:none">
 			<p>This is a test message!</p>
@@ -11,18 +10,30 @@
 			<button type="button" id="countUpButton" onclick="countUp()">Click to increment</button>
 			<button type="button" id="countDownButton" onclick="countDown()">Click to decrement</button>
 		</div>
-    <div style="display:none">
+    	<div style="display:none">
 			<button type="button" id="test" onclick="generateTable()" >Click to Bazinga</button>
 			<button type="button" id="test" onclick="addTableRow()" >Click add new row</button>
 			<button type="button" id="test" onclick="removeTableRow()" >Click to remove row</button>
-	</div>
+		</div>
 
 	<div id="reactContainer"></div>
+
+	<!--This div is fucking haunted-->
+	<div id="test"></div>
+	<!--Edit: No it's not, I just made the dumb assumption that nothing else had an id of "test" and so I spent like 20 minutes trying to figure out what I was doing wrong-->
+
+	<div>Top</div>
+	<div id="top">Top</div>
+	<div>Middle</div>
+	<div id="middle">Middle</div>
+	<div>Bottom</div>
+	<div id="bottom">Bottom</div>
 
 	<div id="projectList" class="projectListing">
 		<span>1064 Shillelagh rd</span>
 		<span input type="button" onclick="Bazanga()">Button</span>
 	</div>
+
 	<table id = "bazingaTable" style="display:none">
 		<thead> <button type="button" class="collapsible">Active</button></thead>
 
@@ -40,10 +51,15 @@
 	</table>
 
 		<button type="button" class="anybutton" onclick="Bazanga()">Add Project</button>
-		
+
 		<!--<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
 		<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
 		<script src="js/react_like_button.js"></script>-->
+
+		<table>
+			<thead id = "tableHead"></thead>
+			<tbody id = "tableData"></tbody>
+		</table>
 		
 		<script src="/script.js"></script>
 		<link rel="stylesheet" type="text/css" href="/index.css" />
