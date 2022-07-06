@@ -27,7 +27,7 @@ function websocket()
 		data = event.data;
 
 		tableData = JSON.parse(data);
-		generateTable();
+		//generateTable();
 	};
 }
 
