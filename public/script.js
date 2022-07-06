@@ -53,6 +53,25 @@ function websocket()
 	};
 }
 
+let hidden = true;
+function toggle()
+{
+	bigOne = document.getElementById("TheBigOne");
+	procTable = document.getElementById("procTable");
+
+	if(hidden == true)
+	{
+		bigOne.style.display = "none";
+		procTable.style.display = 'block';
+		hidden = false;
+	}
+	else
+	{
+		bigOne.style.display = "block";
+		procTable.style.display = 'none';
+		hidden = true;
+	}
+}
 
 function Bazanga()
 {
