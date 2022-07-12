@@ -57,7 +57,7 @@ let hidden = true;
 function toggle()
 {
 	bigOne = document.getElementById("TheBigOne");
-	procTable = document.getElementById("procTable");
+	procTable = document.getElementById("procTableDiv");
 
 	if(hidden == true)
 	{
@@ -98,9 +98,9 @@ function countDown()
 let isTableGenerated = false;
 function generateTable() 
 {
-	let top = document.getElementById("top");
-  	let middle = document.getElementById("middle");
-	let bottom = document.getElementById("bottom");
+	let top = document.getElementById("ActiveList");
+  	let middle = document.getElementById("ProposalList");
+	let bottom = document.getElementById("CompletedList");
 	let topDataHtml = "";
   	let middleDataHtml = "";
 	let bottomDataHtml = "";
@@ -270,7 +270,7 @@ for (let i = 0; i < coll.length; i++)
 
 function getHtml(i, tb)
 {
-	return `
+	/*return `
 		<div id="projectList" class="projectListing">
 			<span>
 				${tb[i].ProjectName}
@@ -278,5 +278,6 @@ function getHtml(i, tb)
 			<span input type="button" onclick="Bazanga()">
 				Button
 			</span>
-		</div>`
+		</div>`*/
+	return `<div draggable="true" class="box">Project One</div>`
 }

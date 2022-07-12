@@ -5,6 +5,7 @@
 	<body onload="Start()">
 		<button type="button" onclick="toggle()">Switch</button>
 		<div id="TheBigOne">
+			<h>Projects</h>
 		<button type="button" onclick="revealMessage()" style="display:none">Click for JavaScript execution!</button>
 		<div id="hiddenMessage" style="display:none">
 			<p>This is a test message!</p>
@@ -24,7 +25,7 @@
 	<div id="test"></div>
 	<!--Edit: No it's not, I just made the dumb assumption that nothing else had an id of "test" and so I spent like 20 minutes trying to figure out what I was doing wrong-->
 
-	<div>Top</div>
+	<!--<div>Top</div>
 	<div id="top">Top</div>
 	<div>Middle</div>
 	<div id="middle">Middle</div>
@@ -34,17 +35,17 @@
 	<div id="projectList" class="projectListing">
 		<span>1064 Shillelagh rd</span>
 		<span input type="button" onclick="Bazanga()" style="background-color:blue;">Button</span>
-	</div>
+	</div>-->
 	
-	<div class="container">
-		<div draggable="true" class="box">A</div>
-		<div draggable="true" class="box">B</div>
-		<div draggable="true" class="box">C</div>
-	  </div>
+	
 
-	<button type="button" class="collapsible">Active</button>
-	<button type="button" class="collapsible">Proposals</button>
-	<button type="button" class="collapsible">Completed</button>
+	
+	<button type="button" id="ActiveListHeader" class="collapsible">Active</button>
+	<div id="ActiveList"></div>
+	<button type="button" id="ProposalListHeader" class="collapsible">Proposals</button>
+	<div id="ProposalList"></div>
+	<button type="button" id="CompletedListHeader" class="collapsible">Completed</button>
+	<div id="CompletedList"></div>
 	<!--<button type="button" class="anybutton" onclick="Bazanga()">Add Project</button>-->
 
 	<!--
@@ -71,10 +72,14 @@
 		<script src="js/react_like_button.js"></script>-->
 
 		</div>
-		<table id = "procTable" style="display:none">
-			<thead id = "tableHead"></thead>
-			<tbody id = "tableData"></tbody>
-		</table>
+		<div id="procTableDiv" style="display:none">
+			<h>Estimate</h>
+			<table id = "procTable">
+				<thead id = "tableHead"></thead>
+				<tbody id = "tableData"></tbody>
+			</table>
+		</div>
+		
 		
 		<script src="/script.js"></script>
 		<link rel="stylesheet" type="text/css" href="/index.css" />
