@@ -24,12 +24,7 @@ function websocket()
 
 		tableData = JSON.parse(data);
 		//console.log("Loading page: " + document.URL);
-		if (document.URL.includes("projectBudget.html"))
-		{
-			//console.log("New Page");
-			tableGenTest();
-		}
-		else generateTable();
+		tableGenTest();
 	
 	};
 
@@ -78,73 +73,6 @@ function toggle()
 		procTable.style.display = 'none';
 		hidden = true;
 	}
-}
-
-function Bazanga()
-{
-	console.log("Bazung");
-}
-
-function revealMessage()
-{
-	document.getElementById("hiddenMessage").style.display = 'block';
-}
-function countUp()
-{
-	var currentVal = parseInt(document.getElementById("counterText").innerHTML);
-	var newVal = currentVal + 1;
-	document.getElementById("counterText").innerHTML = newVal;
-}
-function countDown()
-{
-	var currentVal = parseInt(document.getElementById("counterText").innerHTML);
-	var newVal = currentVal - 1;
-	document.getElementById("counterText").innerHTML = newVal;
-}
-
-let isTableGenerated = false;
-function generateTable() 
-{
-	let top = document.getElementById("ActiveList");
-  	let middle = document.getElementById("ProposalList");
-	let bottom = document.getElementById("CompletedList");
-	let topDataHtml = "";
-  	let middleDataHtml = "";
-	let bottomDataHtml = "";
-
-  	if (isTableGenerated == false) 
-  	{
-    	for (i = 0; i < tableData.length; i++) 
-		{
-			switch(tableData[i].ProjectStatus) 
-			{
-				case 0: topDataHtml += getHtml(i, tableData);
-					break;
-				case 1: middleDataHtml += getHtml(i, tableData);
-					break;
-				case 2: bottomDataHtml += getHtml(i, tableData);
-					break;
-			}
-    	}
-		top.innerHTML = topDataHtml;
-    	middle.innerHTML = middleDataHtml;
-		bottom.innerHTML = bottomDataHtml;
-    	isTableGenerated = true;
-  	} 
-  	else 
-  	{
-    	isTableGenerated = false;
-		console.log("Bazinga");
-		/*
-    	document.getElementById("Bazinga").innerHTML = "<tr></tr>";
-    	document.getElementById("Bazinga2").innerHTML = "<tr></tr>";
-    	document.getElementById("Bazinga3").innerHTML = "<tr></tr>";
-		*/
-    	generateTable();
-  	}
-
-  //document.getElementById("Bazinga").innerHTML += '</tr>';
-  //isTableGenerated = true;
 }
 
 const tableHead = document.getElementById('tableHead');
@@ -211,7 +139,7 @@ function addProject()
 	}
 	dataHtml += `<td>
 					<button type="button" onclick="removeProject(this)">
-						Remove Project
+						Remove line item
 					</button>
 				</td>
 			</tr>`;
