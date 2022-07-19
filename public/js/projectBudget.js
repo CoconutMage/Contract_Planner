@@ -22,8 +22,14 @@ function websocket()
 		data = event.data;
 
 		tableData = JSON.parse(data);
-		generateTable();
-		tableGenTest();
+		//console.log("Loading page: " + document.URL);
+		if (document.URL.includes("projectBudget.html"))
+		{
+			//console.log("New Page");
+			tableGenTest();
+		}
+		else generateTable();
+	
 	};
 
 	//CUSTOM FUNCTIONS
@@ -246,7 +252,45 @@ function saveTable()
 	websocket.sendTable(JSON.stringify(arr));
 }
 
+function projectStatusChanger()
+{
+	//The database deals in an array that represents a dictionary
+	//This simple function to change project status is something like BigO(n^2) or something super inefficient
+	let keys = [];
+	let values = [];
+	let readKeys = document.querySelectorAll('[id=tableKey]');
+	let readValues = document.querySelectorAll('[id=td]');
+	let arr = new Array(readValues.length);
 
+	for(i = 0; i < readKeys.length; i++)
+	{
+		keys[i] = readKeys[i].textContent;
+		//console.log(keys[i]);
+	}
+	for(i = 0; i < readValues.length; i++)
+	{
+		values[i] = readValues[i].textContent;
+		//console.log(values[i]);
+	}
+	
+	for (let i = 0, ii = 0; i < arr.length; i++, ii++) 
+	{
+		if(ii == 5)
+		{
+			ii = 0;
+		}
+		arr[i] = {[keys[ii]] : values[i]};
+		console.log(JSON.stringify(arr[i]));
+	}
+	//let tableKeys = Object.keys(tableData[0]);
+	for (i = 2; i < tableData.length; i++) 
+	{
+		dataTableHead += 
+		`<th id = "tableKey">${tableKeys[i]}</th>`
+	}
+
+	websocket.sendTable(JSON.stringify(arr));
+}
 
 //code for the collapsible thing
 var coll = document.getElementsByClassName("collapsible");
@@ -279,5 +323,64 @@ function getHtml(i, tb)
 				Button
 			</span>
 		</div>`*/
-	return `<div draggable="true" class="box">Project One</div>`
+	const newElement = document.createElement("div");
+	newElement.id = ("project" + i);
+	newElement.setAttribute("draggable", true);
+	newElement.setAttribute("ondragstart", "drag(event)");
+	newElement.setAttribute("class", "draggableProject");
+	newElement.innerHTML = tb[i].ProjectName;
+
+	var button = document.createElement('button');
+	button.setAttribute("onclick", "window.location.href='html/projectBudget.html';");
+
+	newElement.appendChild(button);
+
+	return newElement.outerHTML;
+	//return `<div id=${tb[i].ProjectName} draggable="true" ondragstart="drag(event)" class="draggableProject">${tb[i].ProjectName}</div>`
+}
+
+/* When the user clicks on the button,
+toggle between hiding and showing the dropdown content */
+function myFunction()
+{
+	document.getElementById("bulkAddDropdown").classList.toggle("show");
+}
+  
+  // Close the dropdown menu if the user clicks outside of it
+window.onclick = function(event)
+{
+	//if (!event.target.matches('.dropbtn'))
+	if (document.URL.includes("projectBudget") && !document.getElementById('bulkAddDropdown').contains(event.target) && !event.target.matches('.dropbtn'))
+	{
+		var dropdowns = document.getElementsByClassName("dropdown-content");
+		var i;
+		for (i = 0; i < dropdowns.length; i++)
+		{
+			var openDropdown = dropdowns[i];
+			if (openDropdown.classList.contains('show'))
+			{
+				openDropdown.classList.remove('show');
+			}
+		}
+	}
+}
+function allowDrop(ev)
+{
+	ev.preventDefault();
+}
+function drag(ev)
+{
+	ev.dataTransfer.setData("text", ev.target.id);
+}
+function dropProject(ev)
+{
+	console.log(ev.target);
+	ev.preventDefault();
+	var data = ev.dataTransfer.getData("text");
+	ev.target.nextElementSibling.appendChild(document.getElementById(data));
+	//Change project status here
+}
+function BulkAddRows()
+{
+
 }

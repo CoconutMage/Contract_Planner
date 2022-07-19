@@ -1,0 +1,29 @@
+<html>
+	<head>
+	</head>
+    <body onload="Start()">
+        <div id="procTableDiv">
+            <div class="dropdown">
+                <button onclick="myFunction()" class="dropbtn">Dropdown</button>
+                <div id="bulkAddDropdown" class="dropdown-content">
+                    <input type="checkbox" id="lineItem1" name="lineItem1" value="Bike">
+                    <label for="lineItem1"> Door</label><br>
+                    <input type="checkbox" id="lineItem2" name="lineItem2" value="Car">
+                    <label for="lineItem2"> Window</label><br>
+                    <input type="checkbox" id="lineItem3" name="lineItem3" value="Boat">
+                    <label for="lineItem3"> Floor</label><br>
+                <button onclick="BulkAddRows()">Bulk Add</button>
+                </div>
+            </div>
+            <h>Estimate</h>
+            <table id = "procTable" style="color:whitesmoke">
+                <thead id = "tableHead"></thead>
+                <tbody id = "tableData"></tbody>
+            </table>
+        </div>
+        
+        
+        <script src="/script.js"></script>
+        <link rel="stylesheet" type="text/css" href="../css/index.css" />
+    </body>
+</html>
