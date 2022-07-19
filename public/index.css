@@ -84,3 +84,8 @@ body {
   padding: 10px;
   cursor: move;
 }
+
+#tableData tr:nth-child(odd) 
+{
+  background: rgb(80, 80, 80);
+}
