@@ -13,6 +13,13 @@ body {
   background: rgb(156, 76, 0); 
 }
 
+.theBigOne {
+  display: grid;
+  justify-content: left;
+  padding: 20px;
+  gap: 20px
+}
+
 .bulkAddPageLoader {
   /*width: 80px;
   height: 30px;
@@ -22,16 +29,30 @@ body {
   background: rgb(78, 61, 5); 
 }
 
-.collapsible {
+.collapsibleButton {
   background-color: #777;
   color: white;
   cursor: pointer;
-  padding: 18px;
-  width: 100%;
+  padding: 10px;
+  width: 234px;
+  height: 43px;
   border: none;
-  text-align: left;
+  display: flex;
+  justify-content: left;
+  align-items: center;
   outline: none;
   font-size: 15px;
+}
+
+.collapsibleArrowImageOpen {
+  width: 32px;
+  height: 20px;
+}
+
+.collapsibleArrowImageClose {
+  width: 20px;
+  height: 32px;
+  padding-left: 6px;
 }
 
 .active, .collapsible:hover {

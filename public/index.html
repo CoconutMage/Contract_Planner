@@ -3,17 +3,29 @@
 	<head>
 	</head>
 	<body onload="Start()">
-		<div id="TheBigOne">
-			<h>Projects</h>
+		<div id="TheBigOne" class="theBigOne">
+			<h style="padding: 10px">Projects</h>
 
 			<button type="button" id="EditBulkAdd" class="bulkAddPageLoader" onclick="window.location.href='html/bulkAddEditor.html';">Edit bulk add dropdown</button>
 	
-			<button type="button" id="ActiveListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsible">Active</button>
-			<div id="ActiveList" class="collapsibleList"></div>
-			<button type="button" id="ProposalListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsible">Proposals</button>
-			<div id="ProposalList" class="collapsibleList"></div>
-			<button type="button" id="CompletedListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsible">Completed</button>
-			<div id="CompletedList" class="collapsibleList"></div>
+			<div input="button" id="ActiveListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsibleButton">
+				<img src="images/dropDownArrowOpen.png" id="img" class="collapsibleArrowImageOpen"></img>
+				<!--id="activeCollapsibleArrowImage"-->
+				<text style="padding-left: 10px;">Active</text>
+			</div>
+			<div id="ActiveList" class="collapsibleList" style="display: none"></div>
+
+			<div input="button" id="ProposalListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsibleButton">
+				<img src="images/dropDownArrowOpen.png" id="img" class="collapsibleArrowImageOpen"></img>
+				<text style="padding-left: 10px;">Proposals</text>
+			</div>
+			<div id="ProposalList" class="collapsibleList" style="display: none"></div>
+
+			<div input="button" id="CompletedListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsibleButton">
+				<img src="images/dropDownArrowOpen.png" id="img" class="collapsibleArrowImageOpen"></img>
+				<text style="padding-left: 10px;">Completed</text>
+			</div>
+			<div id="CompletedList" class="collapsibleList" style="display: none"></div>
 
 			<script src="js/script.js"></script>
 			<link rel="stylesheet" type="text/css" href="css/index.css" />

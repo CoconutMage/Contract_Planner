@@ -141,21 +141,29 @@ function projectStatusChanger()
 }
 
 //code for the collapsible thing
-var coll = document.getElementsByClassName("collapsible");
+var coll = document.getElementsByClassName("collapsibleButton");
 
 for (let i = 0; i < coll.length; i++)
 {
 	coll[i].addEventListener("click", function ()
 	{
+		//theres gotta be a better way to get the image from under a div then this but
+		var imgElem = this.firstChild.nextElementSibling;
 		this.classList.toggle("active");
 		var content = this.nextElementSibling;
-		if (content.style.display === "block")
+		if (content.style.display === "grid")
 		{
 			content.style.display = "none";
+			imgElem.setAttribute("src", "images/dropDownArrowOpen.png");
+			imgElem.classList.add("collapsibleArrowImageOpen");
+			imgElem.classList.remove("collapsibleArrowImageClose");
 		} 
 		else
 		{
-			content.style.display = "block";
+			content.style.display = "grid";
+			imgElem.setAttribute("src", "images/dropDownArrowClosed.png");
+			imgElem.classList.remove("collapsibleArrowImageOpen");
+			imgElem.classList.add("collapsibleArrowImageClose");
 		}
 	});
 }
