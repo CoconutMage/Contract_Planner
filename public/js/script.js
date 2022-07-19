@@ -203,7 +203,3 @@ function dropProject(ev)
 	ev.target.nextElementSibling.appendChild(document.getElementById(data));
 	//Change project status here
 }
-function BulkAddRows()
-{
-
-}

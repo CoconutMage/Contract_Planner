@@ -13,6 +13,13 @@ body {
   background: rgb(156, 76, 0); 
 }
 
+.bulkAddPageLoader {
+  width: 80px;
+  height: 30px;
+  position: absolute;
+  z-index: 2;
+  background: rgb(78, 61, 5); 
+}
 
 .collapsible {
   background-color: #777;

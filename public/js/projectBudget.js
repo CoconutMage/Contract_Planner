@@ -1,4 +1,5 @@
 let tableData = [];
+var saveImminent = false;
 
 function Start()
 {
@@ -163,10 +164,10 @@ function tableGenTest()
 	dataTableHead += 
 	`<th>
 		<button type="button" onclick="addProject()">
-			Add Project
+			Add line item
 		</button>
 		<button type="button" onclick="saveTable()">
-			Save Changes
+			Save table
 		</button>
 	</th>`;
 	tableHead.innerHTML = dataTableHead;
@@ -177,11 +178,11 @@ function tableGenTest()
 		for (i = 2; i < tableKeys.length; i++)
 		{
 			dataHtml +=
-			`<td id = "td" contenteditable="true">
+			`<td id = "td" contenteditable="true" oninput="tableSaveTimer()">
 				${data[tableKeys[i]]}
 			</td>`
 		}
-		dataHtml += `<td><button type="button" onclick="removeProject(this)">Remove Project</button></td></tr>`;
+		dataHtml += `<td><button type="button" onclick="removeProject(this)">Remove line item</button></td></tr>`;
 		rowNumber += 1;
 	}
 	tableBody.innerHTML = dataHtml;
@@ -206,7 +207,7 @@ function addProject()
 	for (i = 2; i < tableKeys.length; i++) 
 	{
 		if(i >=3) keyName = 0;
-		dataHtml += `<td id = "td" contenteditable="true">${keyName}</td>`
+		dataHtml += `<td id = "td" contenteditable="true" oninput="tableSaveTimer()">${keyName}</td>`
 	}
 	dataHtml += `<td>
 					<button type="button" onclick="removeProject(this)">
@@ -219,8 +220,17 @@ function addProject()
 	websocket.addRow();
 }
 
+function tableSaveTimer()
+{
+    var secondsBetweenAutosave = 3
+    if (!saveImminent) setTimeout(function() {saveTable();}, secondsBetweenAutosave * 1000);
+    saveImminent = true;
+}
+
 function saveTable()
 {
+    console.log("saving table");
+    saveImminent = false;
 	let keys = [];
 	let values = [];
 	let readKeys = document.querySelectorAll('[id=tableKey]');
@@ -230,13 +240,13 @@ function saveTable()
 	for(i = 0; i < readKeys.length; i++)
 	{
 		keys[i] = readKeys[i].textContent;
-		//console.log(keys[i]);
+		//console.log("kEYS: " + keys[i]);
 	}
 	for(i = 0; i < readValues.length; i++)
 	{
-		values[i] = readValues[i].textContent;
+		values[i] = (readValues[i].textContent).replace(/(\n|\t)/gm, "");//((readValues[i].textContent.split("\n")[1]).split("\t"))[4];
 		//console.log(values[i]);
-	}
+    }
 	
 	for (let i = 0, ii = 0; i < arr.length; i++, ii++) 
 	{
@@ -245,7 +255,7 @@ function saveTable()
 			ii = 0;
 		}
 		arr[i] = {[keys[ii]] : values[i]};
-		console.log(JSON.stringify(arr[i]));
+		//console.log(JSON.stringify(arr[i]));
 	}
 
 	//send
@@ -292,53 +302,6 @@ function projectStatusChanger()
 	websocket.sendTable(JSON.stringify(arr));
 }
 
-//code for the collapsible thing
-var coll = document.getElementsByClassName("collapsible");
-
-for (let i = 0; i < coll.length; i++)
-{
-	coll[i].addEventListener("click", function ()
-	{
-		this.classList.toggle("active");
-		var content = this.nextElementSibling;
-		if (content.style.display === "block")
-		{
-			content.style.display = "none";
-		} 
-		else
-		{
-			content.style.display = "block";
-		}
-	});
-}
-
-function getHtml(i, tb)
-{
-	/*return `
-		<div id="projectList" class="projectListing">
-			<span>
-				${tb[i].ProjectName}
-			</span>
-			<span input type="button" onclick="Bazanga()">
-				Button
-			</span>
-		</div>`*/
-	const newElement = document.createElement("div");
-	newElement.id = ("project" + i);
-	newElement.setAttribute("draggable", true);
-	newElement.setAttribute("ondragstart", "drag(event)");
-	newElement.setAttribute("class", "draggableProject");
-	newElement.innerHTML = tb[i].ProjectName;
-
-	var button = document.createElement('button');
-	button.setAttribute("onclick", "window.location.href='html/projectBudget.html';");
-
-	newElement.appendChild(button);
-
-	return newElement.outerHTML;
-	//return `<div id=${tb[i].ProjectName} draggable="true" ondragstart="drag(event)" class="draggableProject">${tb[i].ProjectName}</div>`
-}
-
 /* When the user clicks on the button,
 toggle between hiding and showing the dropdown content */
 function myFunction()
@@ -350,7 +313,7 @@ function myFunction()
 window.onclick = function(event)
 {
 	//if (!event.target.matches('.dropbtn'))
-	if (document.URL.includes("projectBudget") && !document.getElementById('bulkAddDropdown').contains(event.target) && !event.target.matches('.dropbtn'))
+	if (/*document.URL.includes("projectBudget") && */!document.getElementById('bulkAddDropdown').contains(event.target) && !event.target.matches('.dropbtn'))
 	{
 		var dropdowns = document.getElementsByClassName("dropdown-content");
 		var i;
