@@ -3,31 +3,18 @@
 	<head>
 	</head>
 	<body onload="Start()">
-		<button type="button" onclick="toggle()">Switch</button>
 		<div id="TheBigOne">
 			<h>Projects</h>
-			<button type="button" onclick="revealMessage()" style="display:none">Click for JavaScript execution!</button>
-			<div id="hiddenMessage" style="display:none">
-				<p>This is a test message!</p>
-				<p id="counterText">5</p>
-				<button type="button" id="countUpButton" onclick="countUp()">Click to increment</button>
-				<button type="button" id="countDownButton" onclick="countDown()">Click to decrement</button>
-			</div>
-    	<div style="display:none">
-			<button type="button" id="test" onclick="generateTable()" >Click to Bazinga</button>
-			<button type="button" id="test" onclick="addTableRow()" >Click add new row</button>
-			<button type="button" id="test" onclick="removeTableRow()" >Click to remove row</button>
-		</div>
-
 	
-	<button type="button" id="ActiveListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsible">Active</button>
-	<div id="ActiveList"></div>
-	<button type="button" id="ProposalListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsible">Proposals</button>
-	<div id="ProposalList"></div>
-	<button type="button" id="CompletedListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsible">Completed</button>
-	<div id="CompletedList"></div>
+			<button type="button" id="ActiveListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsible">Active</button>
+			<div id="ActiveList" class="collapsibleList"></div>
+			<button type="button" id="ProposalListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsible">Proposals</button>
+			<div id="ProposalList" class="collapsibleList"></div>
+			<button type="button" id="CompletedListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsible">Completed</button>
+			<div id="CompletedList" class="collapsibleList"></div>
 
-		<script src="js/script.js"></script>
-		<link rel="stylesheet" type="text/css" href="css/index.css" />
+			<script src="js/script.js"></script>
+			<link rel="stylesheet" type="text/css" href="css/index.css" />
+		</div>
 	</body>
 </html>

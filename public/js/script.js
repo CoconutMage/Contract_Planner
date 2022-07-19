@@ -180,6 +180,7 @@ function getHtmlForProjectList(i, tb)
 
 	var button = document.createElement('button');
 	button.setAttribute("onclick", "window.location.href='html/projectBudget.html';");
+	button.setAttribute("class", "anybutton");
 
 	newElement.appendChild(button);
 
