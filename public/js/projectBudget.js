@@ -3,6 +3,8 @@ var saveImminent = false;
 
 function Start()
 {
+	//String with table name here
+	console.log(sessionStorage.getItem("tableName"));
 	websocket();
 }
 

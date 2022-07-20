@@ -187,11 +187,18 @@ function getHtmlForProjectList(i, tb)
 	newElement.innerHTML = tb[i].ProjectName;
 
 	var button = document.createElement('button');
-	button.setAttribute("onclick", "window.location.href='html/projectBudget.html';");
+	button.setAttribute("onclick", "window.location.href='html/projectBudget.html'; sessionStorage.setItem('tableName', 'Bazang');");
 	button.setAttribute("class", "anybutton");
 	button.innerHTML = "Budget";
 
+	var buttonTwo = document.createElement('img');
+	buttonTwo.setAttribute("onclick", "console.log('Remove');");
+	buttonTwo.setAttribute("class", "removeProjectButton");
+	buttonTwo.setAttribute("src", "images/removeIcon.png")
+	buttonTwo.innerHTML = "Delete Project";
+
 	newElement.appendChild(button);
+	newElement.appendChild(buttonTwo);
 
 	return newElement.outerHTML;
 	//return `<div id=${tb[i].ProjectName} draggable="true" ondragstart="drag(event)" class="draggableProject">${tb[i].ProjectName}</div>`
