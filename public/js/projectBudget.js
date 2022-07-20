@@ -97,6 +97,9 @@ function tableGenTest()
 		<button type="button" onclick="saveTable()">
 			Save table
 		</button>
+		<button type="button" onclick="batchRows()">
+			Batch Add Rows
+		</button>
 	</th>`;
 	tableHead.innerHTML = dataTableHead;
 
@@ -137,15 +140,46 @@ function addProject()
 		if(i >=3) keyName = 0;
 		dataHtml += `<td id = "td" contenteditable="true" oninput="tableSaveTimer()">${keyName}</td>`
 	}
-	dataHtml += `<td>
+	dataHtml += `
+			<td>
+				<button type="button" onclick="removeProject(this)">
+					Remove Project
+				</button>
+			</td>
+		</tr>`;
+	tableBody.innerHTML = dataHtml;
+	
+	websocket.addRow();
+}
+
+function batchRows()
+{
+	/*
+	let tableKeys = Object.keys(tableData[0]);
+
+	//Do the thing
+	for(i = 0; i<5; i++)
+	{
+		dataHtml += `<tr id = "tableRow_${rowNumber}">`;
+		rowNumber += 1;
+		let keyName = "Bazinga";
+		for (i = 2; i < tableKeys.length; i++) 
+		{
+			if(i >=3) keyName = 0;
+			dataHtml += `<td id = "td" contenteditable="true">${keyName}</td>`
+		}
+		dataHtml += `
+				<td>
 					<button type="button" onclick="removeProject(this)">
 						Remove line item
 					</button>
 				</td>
 			</tr>`;
-	tableBody.innerHTML = dataHtml;
-	
-	websocket.addRow();
+		tableBody.innerHTML = dataHtml;
+		
+		websocket.addRow();
+	}
+	*/
 }
 
 function tableSaveTimer()
