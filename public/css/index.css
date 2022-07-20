@@ -1,0 +1,79 @@
+body {
+  background-color: #262626;
+	color: white;
+}
+
+.anybutton {
+  /*top:11%;*/
+  left: 35px;
+  width: 60px;
+  height: 20px;
+  position: relative;
+  z-index: 2;
+  background: rgb(156, 76, 0); 
+}
+
+.theBigOne {
+  display: grid;
+  justify-content: left;
+  padding: 20px;
+  gap: 20px
+}
+
+.bulkAddPageLoader {
+  /*width: 80px;
+  height: 30px;
+  display: block;
+  position: absolute;*/
+  z-index: 2;
+  background: rgb(78, 61, 5); 
+}
+
+.collapsibleButton {
+  background-color: #777;
+  color: white;
+  cursor: pointer;
+  padding: 10px;
+  width: 234px;
+  height: 43px;
+  border: none;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  outline: none;
+  font-size: 15px;
+}
+
+.collapsibleArrowImageOpen {
+  width: 32px;
+  height: 20px;
+}
+
+.collapsibleArrowImageClose {
+  width: 20px;
+  height: 32px;
+  padding-left: 6px;
+}
+
+.active, .collapsible:hover {
+  background-color: #555;
+}
+
+.collapsibleList {
+  display: grid;
+  justify-content: space-between;
+  gap: 5px;
+  padding: 10px;
+}
+
+.draggableProject {
+  border: 3px solid #666;
+  background-color: #ddd;
+  color:rgb(0, 0, 0);
+  border-radius: .5em;
+  padding: 10px;
+  cursor: move;
+  display: inline;
+  width: 200px;
+  /*justify-content: space-between;*/
+}

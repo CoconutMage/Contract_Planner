@@ -3,86 +3,32 @@
 	<head>
 	</head>
 	<body onload="Start()">
-		<button type="button" onclick="toggle()">Switch</button>
-		<div id="TheBigOne">
-			<h>Projects</h>
-		<button type="button" onclick="revealMessage()" style="display:none">Click for JavaScript execution!</button>
-		<div id="hiddenMessage" style="display:none">
-			<p>This is a test message!</p>
-			<p id="counterText">5</p>
-			<button type="button" id="countUpButton" onclick="countUp()">Click to increment</button>
-			<button type="button" id="countDownButton" onclick="countDown()">Click to decrement</button>
-		</div>
-    	<div style="display:none">
-			<button type="button" id="test" onclick="generateTable()" >Click to Bazinga</button>
-			<button type="button" id="test" onclick="addTableRow()" >Click add new row</button>
-			<button type="button" id="test" onclick="removeTableRow()" >Click to remove row</button>
-		</div>
+		<div id="TheBigOne" class="theBigOne">
+			<h style="padding: 10px">Projects</h>
 
-	<div id="reactContainer"></div>
-
-	<!--This div is fucking haunted-->
-	<div id="test"></div>
-	<!--Edit: No it's not, I just made the dumb assumption that nothing else had an id of "test" and so I spent like 20 minutes trying to figure out what I was doing wrong-->
-
-	<!--<div>Top</div>
-	<div id="top">Top</div>
-	<div>Middle</div>
-	<div id="middle">Middle</div>
-	<div>Bottom</div>
-	<div id="bottom">Bottom</div>
-
-	<div id="projectList" class="projectListing">
-		<span>1064 Shillelagh rd</span>
-		<span input type="button" onclick="Bazanga()" style="background-color:blue;">Button</span>
-	</div>-->
+			<button type="button" id="EditBulkAdd" class="bulkAddPageLoader" onclick="window.location.href='html/bulkAddEditor.html';">Edit bulk add dropdown</button>
 	
-	
+			<div input="button" id="ActiveListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsibleButton">
+				<img src="images/dropDownArrowOpen.png" id="img" class="collapsibleArrowImageOpen"></img>
+				<!--id="activeCollapsibleArrowImage"-->
+				<text style="padding-left: 10px;">Active</text>
+			</div>
+			<div id="ActiveList" class="collapsibleList" style="display: none"></div>
 
-	
-	<button type="button" id="ActiveListHeader" class="collapsible">Active</button>
-	<div id="ActiveList"></div>
-	<button type="button" id="ProposalListHeader" class="collapsible">Proposals</button>
-	<div id="ProposalList"></div>
-	<button type="button" id="CompletedListHeader" class="collapsible">Completed</button>
-	<div id="CompletedList"></div>
-	<!--<button type="button" class="anybutton" onclick="Bazanga()">Add Project</button>-->
+			<div input="button" id="ProposalListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsibleButton">
+				<img src="images/dropDownArrowOpen.png" id="img" class="collapsibleArrowImageOpen"></img>
+				<text style="padding-left: 10px;">Proposals</text>
+			</div>
+			<div id="ProposalList" class="collapsibleList" style="display: none"></div>
 
-	<!--
-	<table id = "bazingaTable" style="display:none">
-		<thead> </thead>
+			<div input="button" id="CompletedListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsibleButton">
+				<img src="images/dropDownArrowOpen.png" id="img" class="collapsibleArrowImageOpen"></img>
+				<text style="padding-left: 10px;">Completed</text>
+			</div>
+			<div id="CompletedList" class="collapsibleList" style="display: none"></div>
 
-		<tbody id = "Bazinga"></tbody>
-	</table>
-
-    <table id = "bazingaTable2" style="display:none">
-		<thead> </thead>
-		<tbody id = "Bazinga2"></tbody>
-	</table>
-
-    <table id = "bazingaTable3" style="display:none">
-		<thead> </thead>
-		<tbody id = "Bazinga3"></tbody>
-	</table>-->
-
-		<!--<button type="button" class="anybutton" onclick="Bazanga()">Add Project</button>-->
-
-		<!--<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-		<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-		<script src="js/react_like_button.js"></script>-->
-
+			<script src="js/script.js"></script>
+			<link rel="stylesheet" type="text/css" href="css/index.css" />
 		</div>
-		<div id="procTableDiv" style="display:none">
-			<h>Estimate</h>
-			<table id = "procTable">
-				<thead id = "tableHead"></thead>
-				<tbody id = "tableData"></tbody>
-				<tfoot id = "tableFoot"></tfoot>
-			</table>
-		</div>
-		
-		
-		<script src="/script.js"></script>
-		<link rel="stylesheet" type="text/css" href="/index.css" />
 	</body>
 </html>
