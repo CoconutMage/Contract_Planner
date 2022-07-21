@@ -4,13 +4,35 @@ body {
 }
 
 .anybutton {
-  /*top:11%;*/
-  left: 35px;
+  right: 45px;
   width: 60px;
   height: 20px;
-  position: relative;
+  position: absolute;
   z-index: 2;
   background: rgb(156, 76, 0); 
+}
+
+.removeProjectButton {
+  right: 15px;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  z-index: 2;
+  /*background: rgb(156, 76, 0);*/
+}
+
+.addProjectButton {
+  grid-area: addProject;
+}
+
+.topMenuGridContainer {
+  display: grid;
+  grid-template-areas:
+  'bulkAdd null null'
+  'newProjectTextInput newProjectTextinput addProject';
+  row-gap: 10px;
+  column-gap: 5px;
+  padding: 10px;
 }
 
 .theBigOne {
@@ -27,6 +49,7 @@ body {
   position: absolute;*/
   z-index: 2;
   background: rgb(78, 61, 5); 
+  grid-area: bulkAdd;
 }
 
 .collapsibleButton {
@@ -75,5 +98,6 @@ body {
   cursor: move;
   display: inline;
   width: 200px;
+  position: relative;
   /*justify-content: space-between;*/
 }
