@@ -47,6 +47,18 @@ function websocket()
 	}
 	websocket.removeRow = removeRow;
 
+	function addTable(tableName)
+	{
+		ws.send("AddTable " + tableName);
+	}
+	websocket.addTable = addTable;
+
+	function dropTable(tableName)
+	{
+		ws.send("DropTable " + tableName);
+	}
+	websocket.dropTable = dropTable;
+
 	//ERROR HANDLING AND DEBUGGING
 	ws.onerror = function (event)
 	{
@@ -86,7 +98,7 @@ function generateTable()
   	else 
   	{
     	isTableGenerated = false;
-		console.log("Bazinga");
+		//console.log("Bazinga");
 		/*
     	document.getElementById("Bazinga").innerHTML = "<tr></tr>";
     	document.getElementById("Bazinga2").innerHTML = "<tr></tr>";
