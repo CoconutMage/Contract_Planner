@@ -6,6 +6,10 @@
 		<div id="TheBigOne" class="theBigOne">
 			<h style="padding: 10px">Projects</h>
 
+			<button type="button" onclick="websocket.addTable('TABLETABLETABLE')">Add Table</button>
+			<button type="button" onclick="websocket.dropTable('TABLETABLETABLE')">Drop Table</button>
+
+			<button type="button" id="EditBulkAdd" class="bulkAddPageLoader" onclick="window.location.href='html/bulkAddEditor.html';">Edit bulk add dropdown</button>
 			<div class="topMenuGridContainer">
 				<button type="button" id="EditBulkAdd" class="bulkAddPageLoader" onclick="window.location.href='html/bulkAddEditor.html';">Edit bulk add dropdown</button>
 				<input type="text" id="newProjectText" placeholder="New Project name" style="grid-area: newProjectTextInput"></input>

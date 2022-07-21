@@ -173,6 +173,55 @@ function connectWebsocket(server)
 					}
 				});
 			}
+
+			if(e.data.includes("AddTable"))
+			{
+				tableName = e.data.replace("AddTable ", "");
+
+				sql = `CREATE TABLE IF NOT EXISTS ${tableName}
+				(
+					"Item"	TEXT NOT NULL DEFAULT 'Item Name',
+					"Quantity"	INTEGER NOT NULL DEFAULT 0,
+					"Cost"	REAL NOT NULL DEFAULT 0.0,
+					"SubcontractorFee"	REAL NOT NULL DEFAULT 0.0,
+					"MaterialCost"	REAL NOT NULL DEFAULT 0.0,
+					"PrelimCost"	REAL NOT NULL DEFAULT 0.0,
+					"FinalCost"	REAL NOT NULL DEFAULT 0.0,
+					"ProftMargin"	REAL NOT NULL DEFAULT 0.0
+				)`;
+				
+				db.run(sql, function(err) 
+				{
+					if (err) 
+					{
+						return console.log(err.message);
+					}
+					else
+					{
+						console.log(tableName);
+					}
+				});
+			}
+
+			if(e.data.includes("DropTable"))
+			{
+				tableName = e.data.replace("DropTable ", "");
+
+				sql = `DROP TABLE IF EXISTS ${tableName}`;
+
+				db.run(sql, function(err) 
+				{
+					if (err) 
+					{
+						return console.log(err.message);
+					}
+					else
+					{
+						console.log(tableName);
+					}
+				});
+			}
+			
 		}
 
 		ws.on('close', function (event)
