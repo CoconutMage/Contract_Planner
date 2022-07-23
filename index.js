@@ -33,7 +33,8 @@ function connectWebsocket(server)
 		{
 			db.serialize(() => 
 			{
-				db.all('SELECT * FROM BudgetEstimate', /*[param1, param2],*/ (err, result) => 
+				/*db.all('SELECT * FROM BudgetEstimate', //[param1, param2],// (err, result) => */
+				db.all('SELECT * FROM ProjectList', /*[param1, param2],*/ (err, result) =>
 				{
 					if (err) 
 					{

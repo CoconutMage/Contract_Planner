@@ -2,6 +2,7 @@ let tableData = [];
 
 function Start()
 {
+
 	websocket();
 }
 
@@ -49,6 +50,7 @@ function websocket()
 
 	function addTable(tableName)
 	{
+		console.log(tableName);
 		ws.send("AddTable " + tableName);
 	}
 	websocket.addTable = addTable;
@@ -64,6 +66,17 @@ function websocket()
 	{
 		ws.send("ERROR " + event);
 	};
+}
+
+function createProject()
+{
+	//console.log(document.getElementById('newProjectText').value.replaceAll(" ", ""))
+	websocket.addTable((document.getElementById('newProjectText').value.replaceAll(" ", "") + "Budget"));
+	websocket.addRow(); //This row needs added with the name of a new project
+}
+function removeTable(data)
+{
+	websocket.dropTable(data)
 }
 
 let isTableGenerated = false;
@@ -204,7 +217,9 @@ function getHtmlForProjectList(i, tb)
 	button.innerHTML = "Budget";
 
 	var buttonTwo = document.createElement('img');
-	buttonTwo.setAttribute("onclick", "console.log('Remove');");
+	var projectName = tb[i].ProjectName;
+	//How do I call function with arguement passed in *******************************************************
+	buttonTwo.setAttribute("onclick", "remove");
 	buttonTwo.setAttribute("class", "removeProjectButton");
 	buttonTwo.setAttribute("src", "images/removeIcon.png")
 	buttonTwo.innerHTML = "Delete Project";
@@ -225,9 +240,11 @@ function drag(ev)
 }
 function dropProject(ev)
 {
-	console.log(ev.target);
 	ev.preventDefault();
 	var data = ev.dataTransfer.getData("text");
+	console.log(data);
+	console.log(ev.target);
+	console.log(ev.target.nextElementSibling);
 	ev.target.nextElementSibling.appendChild(document.getElementById(data));
 	//Change project status here
 }
