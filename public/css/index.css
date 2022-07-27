@@ -5,7 +5,7 @@
 }
 
 body {
-  background-color: #262626;
+  background-color: #2D1115;
 	color: white;
 }
 
@@ -15,7 +15,7 @@ body {
   height: 20px;
   position: absolute;
   z-index: 2;
-  background: rgb(156, 76, 0); 
+  background: #487878; 
 }
 
 .removeProjectButton {
@@ -88,7 +88,7 @@ body {
 }
 
 .collapsibleButton {
-  background-color: #777;
+  background-color: darkslategray;
   color: white;
   cursor: pointer;
   padding: 10px;
@@ -114,7 +114,7 @@ body {
 }
 
 .active, .collapsible:hover {
-  background-color: #555;
+  background-color: rgb(33, 56, 56);
 }
 
 .collapsibleList {

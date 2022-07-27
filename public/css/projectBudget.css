@@ -1,19 +1,22 @@
 body {
-    background-color: #262626;
+    background-color: #2D1115;
       color: white;
   }
   
   .anybutton {
-    top:11%;
+    /*top:11%;
     left:55%;
     width:100px;
     height:40px;
     position: absolute;
-    z-index: 2;
-    background: orange; 
+    z-index: 2;*/
+    background: #487878; 
   }
   
-  
+  table, th, td {
+    border: 1px solid #65334D;
+  }
+
   /* Dropdown Button */
   .dropbtn {
     background-color: #dbca34;

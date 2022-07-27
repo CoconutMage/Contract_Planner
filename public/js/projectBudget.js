@@ -86,12 +86,19 @@ function websocket()
 	}
 	websocket.removeRowFromTable = removeRowFromTable;
 
-	function addRowToTable(tableName) 
+	function addRowToTable(tableName, rowNumber) 
 	{
-		var wsMessage = "AddRowToTable" + tableName;
+		var wsMessage = "AddRowToTable" + tableName + ":" + rowNumber;
 		ws.send(wsMessage);
 	}
 	websocket.addRowToTable = addRowToTable;
+
+	function addRowToTableWithValue(tableName, itemName, rowNumber)
+	{
+		var wsMessage = "AddRowToTableWithValue" + tableName + ":" + itemName + ":" + rowNumber;
+		ws.send(wsMessage);
+	}
+	websocket.addRowToTableWithValue = addRowToTableWithValue;
 
 	//////////////////////////////////////////////////////////
 }
@@ -142,6 +149,7 @@ let dataHtml = '';
 let rowNumber = 1;
 function tableGenTest()
 {
+	//Clean up and combine some of this code to generate table elements so im not having to edit in multiple places
 	let tableKeys = Object.keys(tableData[0]);
 	for (i = 0; i < tableKeys.length; i++) 
 	{
@@ -150,10 +158,10 @@ function tableGenTest()
 	}
 	dataTableHead += 
 	`<th>
-		<button type="button" onclick="addLineItem()">
+		<button type="button" class="anyButton" onclick="addLineItem()">
 			Add line item
 		</button>
-		<button type="button" onclick="saveTable()">
+		<button type="button" class="anyButton" onclick="saveTable()">
 			Save table
 		</button>
 	</th>`;
@@ -161,22 +169,24 @@ function tableGenTest()
 
 	for (data of tableData)
 	{
+		addLineItem("x", data);
+		/*
 		dataHtml += `<tr id = "tableRow_${rowNumber}">`;
 		for (i = 0; i < tableKeys.length; i++)
 		{
 			var cellID = tableKeys[i] + "" + i;
 			dataHtml +=
-			/*`<td id = ${cellID} contenteditable="true" oninput="tableSaveTimer()">
+			`<td id = ${cellID} contenteditable="true" oninput="tableSaveTimer()">
 				${data[tableKeys[i]]}
-			</td>`*/
-			`<td id = "td"" contenteditable="true" oninput="tableSaveTimer()">
+			</td>`
+			`<td id = "td"" contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">
 				${data[tableKeys[i]]}
 			</td>`
 		}
-		dataHtml += `<td><button type="button" onclick="removeLineItem(this)">Remove line item</button></td></tr>`;
-		rowNumber += 1;
+		dataHtml += `<td><button type="button" class="anyButton" onclick="removeLineItem(this)">Remove line item</button> <button type="button" class="anyButton" onclick="removeLineItem(this)">Change</button></td></tr>`;
+		rowNumber += 1;*/
 	}
-	tableBody.innerHTML = dataHtml;
+	//tableBody.innerHTML = dataHtml;
 }
 
 function removeLineItem(element)
@@ -189,29 +199,33 @@ function removeLineItem(element)
 	elementToRemove.remove();
 }
 
-function addLineItem(itemName = "Item Name")
+function addLineItem(itemName = "Item Name", data = null)
 {
 	let tableKeys = Object.keys(tableData[0]);
 	dataHtml += `<tr id = "tableRow_${rowNumber}">`;
-	rowNumber += 1;
-	let keyName = itemName;
 	for (i = 0; i < tableKeys.length; i++) 
 	{
 		var cellID = tableKeys[i] + "_" + i;
-		if(i != 0 && i != tableKeys.length - 1) keyName = 0;
-		else if (i == tableKeys.length - 1) keyName = "";
+		if (data == null)
+		{
+			if (i == 0) keyName = rowNumber;
+			else if(i != 1 && i != tableKeys.length - 1) keyName = 0;
+			else if (i == 1) keyName = itemName;
+			else if (i == tableKeys.length - 1) keyName = "";
+		}
+		else
+		{
+			keyName = data[tableKeys[i]];
+		}
+
 		dataHtml += `<td id = ${cellID} contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`
 	}
-	dataHtml += `
-			<td>
-				<button type="button" onclick="removeLineItem(this)">
-					Remove line Item
-				</button>
-			</td>
-		</tr>`;
+	dataHtml += `<td><button type="button" class="anyButton" onclick="removeLineItem(this)">Remove line item</button> <button type="button" class="anyButton" onclick="removeLineItem(this)">Change</button></td></tr>`;
+	rowNumber += 1;
 	tableBody.innerHTML = dataHtml;
 	
-	websocket.addRowToTable(tableName);
+	if (itemName == "Item Name") websocket.addRowToTable(tableName, rowNumber);
+	else websocket.addRowToTableWithValue(tableName, itemName, rowNumber);
 }
 
 function batchRows()

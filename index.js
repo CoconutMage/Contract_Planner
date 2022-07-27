@@ -4,6 +4,7 @@ const app = express();
 const port = process.env.PORT || 8080;
 var http = require('http');
 const { table, Console } = require('console');
+const { query } = require('express');
 
 //Database Variables
 const sqlite3 = require('sqlite3').verbose();
@@ -115,7 +116,9 @@ function connectWebsocket(server)
 			{
 				var params = e.data.replace("AddRowToTable", "");
 				console.log(e.data + " JHBJD");
-				var queryRequest = 'INSERT INTO ' + params + ' DEFAULT VALUES';//'SELECT * FROM ' + e.data.replace("RequestTable", "")
+				var queryRequest = 'INSERT INTO ' + params.split(':')[0]
+				queryRequest += `(Row, Item, Quantity, Cost, 'Subcontractor Fee', 'Material Cost', 'Prelim Cost', 'Final Cost', 'Proft Margin', Notes)`;
+				queryRequest += 'VALUES (' + params.split(':')[0] + ', \'Item Name\', \'0\', \'0\', \'0\', \'0\', \'0\', \'0\', \'0\', \'\')'
 				//db.run(`INSERT INTO BudgetEstimate DEFAULT VALUES`, function(err) 
 				db.run(queryRequest, function(err) 
 				{
@@ -307,14 +310,15 @@ function connectWebsocket(server)
 
 				sql = `CREATE TABLE IF NOT EXISTS ${tableName}
 				(
+					"Row"	INTEGER NOT NULL DEFAULT 0,
 					"Item"	TEXT NOT NULL DEFAULT 'Item Name',
 					"Quantity"	INTEGER NOT NULL DEFAULT 0,
 					"Cost"	REAL NOT NULL DEFAULT 0.0,
-					"SubcontractorFee"	REAL NOT NULL DEFAULT 0.0,
-					"MaterialCost"	REAL NOT NULL DEFAULT 0.0,
-					"PrelimCost"	REAL NOT NULL DEFAULT 0.0,
-					"FinalCost"	REAL NOT NULL DEFAULT 0.0,
-					"ProftMargin"	REAL NOT NULL DEFAULT 0.0,
+					"Subcontractor Fee"	REAL NOT NULL DEFAULT 0.0,
+					"Material Cost"	REAL NOT NULL DEFAULT 0.0,
+					"Prelim Cost"	REAL NOT NULL DEFAULT 0.0,
+					"Final Cost"	REAL NOT NULL DEFAULT 0.0,
+					"Proft Margin"	REAL NOT NULL DEFAULT 0.0,
 					"Notes"	TEXT NOT NULL DEFAULT ''
 				)`;
 				
@@ -327,7 +331,11 @@ function connectWebsocket(server)
 					else
 					{
 						console.log(tableName);
-						db.run(`INSERT INTO ${tableName} DEFAULT VALUES`, function(err) 
+						var queryRequest = 'INSERT INTO ' + tableName
+						queryRequest += `(Row, Item, Quantity, Cost, 'Subcontractor Fee', 'Material Cost', 'Prelim Cost', 'Final Cost', 'Proft Margin', Notes)`;
+						queryRequest += 'VALUES (\'1\', \'Item Name\', \'0\', \'0\', \'0\', \'0\', \'0\', \'0\', \'0\', \'\')'
+						//db.run(`INSERT INTO BudgetEstimate DEFAULT VALUES`, function(err) 
+						db.run(queryRequest, function(err) 
 						{
 							if (err) 
 							{
@@ -335,7 +343,7 @@ function connectWebsocket(server)
 							}
 							else
 							{
-								console.log("Row Added to new table");
+								console.log("Row Added");
 							}
 						});
 					}
