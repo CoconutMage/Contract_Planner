@@ -218,7 +218,8 @@ function addLineItem(itemName = "Item Name", data = null)
 			keyName = data[tableKeys[i]];
 		}
 
-		dataHtml += `<td id = ${cellID} contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`
+		if (i != 0) dataHtml += `<td id = ${cellID} contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`
+		else dataHtml += `<td id = ${cellID} draggable="true" ondragstart="rowDragStart(event)" ondragover="allowDrop(event)" ondrop="rowDrop(event)" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`
 	}
 	dataHtml += `<td><button type="button" class="anyButton" onclick="removeLineItem(this)">Remove line item</button> <button type="button" class="anyButton" onclick="removeLineItem(this)">Change</button></td></tr>`;
 	rowNumber += 1;
@@ -226,36 +227,6 @@ function addLineItem(itemName = "Item Name", data = null)
 	
 	if (itemName == "Item Name") websocket.addRowToTable(tableName, rowNumber);
 	else websocket.addRowToTableWithValue(tableName, itemName, rowNumber);
-}
-
-function batchRows()
-{
-	/*
-	let tableKeys = Object.keys(tableData[0]);
-
-	//Do the thing
-	for(i = 0; i<5; i++)
-	{
-		dataHtml += `<tr id = "tableRow_${rowNumber}">`;
-		rowNumber += 1;
-		let keyName = "Bazinga";
-		for (i = 2; i < tableKeys.length; i++) 
-		{
-			if(i >=3) keyName = 0;
-			dataHtml += `<td id = "td" contenteditable="true">${keyName}</td>`
-		}
-		dataHtml += `
-				<td>
-					<button type="button" onclick="removeProject(this)">
-						Remove line item
-					</button>
-				</td>
-			</tr>`;
-		tableBody.innerHTML = dataHtml;
-		
-		websocket.addRow();
-	}
-	*/
 }
 
 function tableSaveTimer()
@@ -365,16 +336,17 @@ function allowDrop(ev)
 {
 	ev.preventDefault();
 }
-function drag(ev)
+function rowDragStart(ev)
 {
-	ev.dataTransfer.setData("text", ev.target.id);
+	console.log(ev.target);
+	ev.dataTransfer.setData("rowDragging", ev.target.id);
 }
-function dropProject(ev)
+function rowDrop(ev)
 {
 	console.log(ev.target);
 	ev.preventDefault();
-	var data = ev.dataTransfer.getData("text");
-	ev.target.nextElementSibling.appendChild(document.getElementById(data));
+	var data = ev.dataTransfer.getData("rowDragging");
+	//ev.target.nextElementSibling.appendChild(document.getElementById(data));
 	//Change project status here
 }
 function BulkAddRows()
