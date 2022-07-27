@@ -1,10 +1,16 @@
+:root {
+  --projectListingWidth: 350px;
+  --blue: #1e90ff;
+  --white: #ffffff;
+}
+
 body {
   background-color: #262626;
 	color: white;
 }
 
 .anybutton {
-  right: 45px;
+  right: 40px;
   width: 60px;
   height: 20px;
   position: absolute;
@@ -14,6 +20,34 @@ body {
 
 .removeProjectButton {
   right: 15px;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  z-index: 2;
+  /*background: rgb(156, 76, 0);*/
+}
+
+.projectOverview {
+  position: absolute;
+  right: 0px;
+  display: grid;
+  grid-template-areas:
+  'null null null'
+  'null null null'
+  'null null null'
+  'null null null';
+  row-gap: 10px;
+  column-gap: 5px;
+  padding: 10px;
+  width: var(--projectListingWidth);
+}
+
+.header {
+  padding: 10px;
+}
+
+.projectInfoButton {
+  right: 105px;
   width: 20px;
   height: 20px;
   position: absolute;
@@ -33,6 +67,7 @@ body {
   row-gap: 10px;
   column-gap: 5px;
   padding: 10px;
+  width: var(--projectListingWidth);
 }
 
 .theBigOne {
@@ -57,7 +92,7 @@ body {
   color: white;
   cursor: pointer;
   padding: 10px;
-  width: 234px;
+  width: var(--projectListingWidth);
   height: 43px;
   border: none;
   display: flex;
@@ -97,7 +132,8 @@ body {
   padding: 10px;
   cursor: move;
   display: inline;
-  width: 200px;
+  width: var(--projectListingWidth);
   position: relative;
+  left: -13px;
   /*justify-content: space-between;*/
 }

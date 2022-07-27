@@ -3,6 +3,7 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 8080;
 var http = require('http');
+const { table, Console } = require('console');
 
 //Database Variables
 const sqlite3 = require('sqlite3').verbose();
@@ -27,7 +28,7 @@ function connectWebsocket(server)
 	wss.on('connection', (ws) => 
 	{
 		console.log("Websocket Connection Successful");
-		sendTableData();
+		//sendTableData();
 		
 		function sendTableData()
 		{
@@ -59,22 +60,106 @@ function connectWebsocket(server)
 
 		ws.onmessage = function(e) 
 		{
+			////////////////////////////////////////////////////////////////////////////////////////
+			//Added till Will finishes table serving
+
+			if (e.data.includes("RequestTable"))
+			{
+				console.log("Requesting: " + e.data.replace("RequestTable", ""));
+				var tableRequest = 'SELECT * FROM ' + e.data.replace("RequestTable", "")
+				db.serialize(() => 
+				{
+					/*db.all('SELECT * FROM BudgetEstimate', //[param1, param2],// (err, result) => */
+					//db.all('SELECT * FROM ?', [tableRequested], /*[param1, param2],*/ (err, result) =>
+					//db.all('SELECT * FROM table=?',[tableRequested], /*[param1, param2],*/ (err, result) =>
+					db.all(tableRequest, /*[param1, param2],*/ (err, result) =>
+					{
+						if (err) 
+						{
+							console.log(err);
+						} 
+						else 
+						{
+							//console.log(result);
+							let tableData = [];
+							tableData = result;
+							
+							wss.clients.forEach((client) => 
+							{
+								client.send(JSON.stringify(tableData));
+							});
+						}
+					});
+				});
+			}
+
+			if(e.data.includes("AddRowData"))
+			{
+				var params = e.data.replace("AddRowData", "");
+				var queryRequest = `INSERT INTO ProjectList(ProjectName,ProjectStatus) VALUES('` + params +`',` + `0`+ `)`;//'SELECT * FROM ' + e.data.replace("RequestTable", "")
+				//db.run(`INSERT INTO BudgetEstimate DEFAULT VALUES`, function(err) 
+				db.run(queryRequest, function(err)
+				{
+					if (err) 
+					{
+					  return console.log(err.message);
+					}
+					else
+					{
+						console.log("Row Added with Data");
+					}
+				});
+			}
+
+			if(e.data.includes("AddRowToTable"))
+			{
+				var params = e.data.replace("AddRowToTable", "");
+				console.log(e.data + " JHBJD");
+				var queryRequest = 'INSERT INTO ' + params + ' DEFAULT VALUES';//'SELECT * FROM ' + e.data.replace("RequestTable", "")
+				//db.run(`INSERT INTO BudgetEstimate DEFAULT VALUES`, function(err) 
+				db.run(queryRequest, function(err) 
+				{
+					if (err) 
+					{
+					  return console.log(err.message);
+					}
+					else
+					{
+						console.log("Row Added");
+					}
+				});
+			}
+
+			if(e.data.includes("RemoveRowFromTable"))
+			{
+				var params = e.data.replace("RemoveRowFromTable", "").split(":");
+				rowid = params[0];
+				tableName = params[1];
+
+				var queryRequest = 'DELETE FROM ' + tableName + ' WHERE rowid=' + rowid;
+
+				//db.run(`DELETE FROM ? WHERE rowid=?`,[tableName, rowid], function(err) 
+				db.run(queryRequest, function(err) 
+				{
+					if (err) 
+					{
+						return console.log(err.message);
+					}
+					else
+					{
+						console.log(rowid);
+					}
+				});
+			}
+
+			/////////////////////////////////////////////////////////////////////////////////////////
+
 			if(e.data.includes("TableData"))
 			{
-				recData = JSON.parse(e.data.replace("TableData: ", ""));
-
-				for(i = 0; i < recData.length ; i++)
-				{
-					//console.log(recData[i]);
-					
-					//console.log(recData[i].Item);
-					/*
-					if(recData[i].Item == undefined)
-					{
-						console.log("UNDEFINED");
-					}
-					*/
-				}
+				var params = e.data.replace("TableData:", "");
+				var tableName = params.split("-:-")[0];
+				console.log(params);
+				recData = JSON.parse(params.split("-:-")[1]);
 
 				//I know this is large and ugly and I could probably do it better
 				// but I don't want to spend too much time on SQLite when there's other things to do
@@ -91,7 +176,10 @@ function connectWebsocket(server)
 
 						if(recData[i].Item != undefined)
 						{
-							db.run('UPDATE BudgetEstimate SET Item=? WHERE rowid=?', [recData[i].Item, ri],/*[param1, param2],*/ (err) => 
+							//var queryRequest = `UPDATE '${tableName}' SET Item='${recData[i].Item}' WHERE rowid='${ri}'`;
+							var queryRequest = 'UPDATE ' + tableName + ' SET Item=\'' + recData[i].Item + '\' WHERE rowid=' + ri;
+							console.log(queryRequest);
+							db.run(queryRequest, /*[param1, param2],*/ (err) => 
 							{
 								if (err) 
 								{
@@ -101,7 +189,9 @@ function connectWebsocket(server)
 						}
 						if(recData[i].Quantity != undefined)
 						{
-							db.run('UPDATE BudgetEstimate SET Quantity=? WHERE rowid=?', [recData[i].Quantity, ri],/*[param1, param2],*/ (err) => 
+							var queryRequest = 'UPDATE ' + tableName + ' SET Quantity=' + recData[i].Quantity + ' WHERE rowid=' + ri;
+							console.log(queryRequest);
+							db.run(queryRequest, /*[param1, param2],*/ (err) => 
 							{
 								if (err) 
 								{
@@ -111,7 +201,8 @@ function connectWebsocket(server)
 						}
 						if(recData[i].Cost != undefined)
 						{
-							db.run('UPDATE BudgetEstimate SET Cost=? WHERE rowid=?', [recData[i].Cost, ri],/*[param1, param2],*/ (err) => 
+							var queryRequest = 'UPDATE ' + tableName + ' SET Cost=' + recData[i].Cost + ' WHERE rowid=' + ri;
+							db.run(queryRequest, /*[param1, param2],*/ (err) => 
 							{
 								if (err) 
 								{
@@ -121,7 +212,8 @@ function connectWebsocket(server)
 						}
 						if(recData[i].SubcontractorFee != undefined)
 						{
-							db.run('UPDATE BudgetEstimate SET SubcontractorFee=? WHERE rowid=?', [recData[i].SubcontractorFee, ri],/*[param1, param2],*/ (err) => 
+							var queryRequest = 'UPDATE ' + tableName + ' SET SubcontractorFee=' + recData[i].SubcontractorFee + ' WHERE rowid=' + ri;
+							db.run(queryRequest, /*[param1, param2],*/ (err) => 
 							{
 								if (err) 
 								{
@@ -131,7 +223,41 @@ function connectWebsocket(server)
 						}
 						if(recData[i].MaterialCost != undefined)
 						{
-							db.run('UPDATE BudgetEstimate SET MaterialCost=? WHERE rowid=?', [recData[i].MaterialCost, ri],/*[param1, param2],*/ (err) => 
+							var queryRequest = 'UPDATE ' + tableName + ' SET MaterialCost=' + recData[i].MaterialCost + ' WHERE rowid=' + ri;
+							db.run(queryRequest, /*[param1, param2],*/ (err) => 
+							{
+								if (err) 
+								{
+									console.log(err)
+								} 
+							});
+						}
+						if(recData[i].PrelimCost != undefined)
+						{
+							var queryRequest = 'UPDATE ' + tableName + ' SET PrelimCost=' + recData[i].PrelimCost + ' WHERE rowid=' + ri;
+							db.run(queryRequest, /*[param1, param2],*/ (err) => 
+							{
+								if (err) 
+								{
+									console.log(err)
+								} 
+							});
+						}
+						if(recData[i].FinalCost != undefined)
+						{
+							var queryRequest = 'UPDATE ' + tableName + ' SET FinalCost=' + recData[i].FinalCost + ' WHERE rowid=' + ri;
+							db.run(queryRequest, /*[param1, param2],*/ (err) => 
+							{
+								if (err) 
+								{
+									console.log(err)
+								} 
+							});
+						}
+						if(recData[i].ProftMargin != undefined)
+						{
+							var queryRequest = 'UPDATE ' + tableName + ' SET ProftMargin=' + recData[i].ProftMargin + ' WHERE rowid=' + ri;
+							db.run(queryRequest, /*[param1, param2],*/ (err) => 
 							{
 								if (err) 
 								{
@@ -188,7 +314,8 @@ function connectWebsocket(server)
 					"MaterialCost"	REAL NOT NULL DEFAULT 0.0,
 					"PrelimCost"	REAL NOT NULL DEFAULT 0.0,
 					"FinalCost"	REAL NOT NULL DEFAULT 0.0,
-					"ProftMargin"	REAL NOT NULL DEFAULT 0.0
+					"ProftMargin"	REAL NOT NULL DEFAULT 0.0,
+					"Notes"	TEXT NOT NULL DEFAULT ''
 				)`;
 				
 				db.run(sql, function(err) 
@@ -200,6 +327,17 @@ function connectWebsocket(server)
 					else
 					{
 						console.log(tableName);
+						db.run(`INSERT INTO ${tableName} DEFAULT VALUES`, function(err) 
+						{
+							if (err) 
+							{
+							return console.log(err.message);
+							}
+							else
+							{
+								console.log("Row Added to new table");
+							}
+						});
 					}
 				});
 			}

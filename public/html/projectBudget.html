@@ -6,14 +6,136 @@
         <div id="procTableDiv">
             <div class="dropdown">
                 <button onclick="myFunction()" class="dropbtn">Dropdown</button>
+                <!--Make this dropdown pull from database table-->
                 <div id="bulkAddDropdown" class="dropdown-content">
-                    <input type="checkbox" id="lineItem1" name="lineItem1" value="Bike">
-                    <label for="lineItem1"> Door</label><br>
-                    <input type="checkbox" id="lineItem2" name="lineItem2" value="Car">
-                    <label for="lineItem2"> Window</label><br>
-                    <input type="checkbox" id="lineItem3" name="lineItem3" value="Boat">
-                    <label for="lineItem3"> Floor</label><br>
-                <button onclick="BulkAddRows()">Bulk Add</button>
+
+                    <input type="checkbox" id="bulkAddLineItem1" name="bulkAddLineItem1" value="BathroomRemodel" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem1"> Bathroom Remodel</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem2" name="bulkAddLineItem2" value="Bedroom" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem2"> Bedroom</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem3" name="bulkAddLineItem3" value="CabinetInstall" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem3"> Cabinet Install</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem4" name="bulkAddLineItem4" value="Cabinet" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem4"> Cabinet</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem5" name="bulkAddLineItem5" value="ConcreteCutting" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem5"> Concrete Cutting</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem6" name="bulkAddLineItem6" value="DemoTrash" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem6"> Demo/Trash</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem7" name="bulkAddLineItem7" value="DoorFixtures" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem7"> Door Fixtures</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem8" name="bulkAddLineItem8" value="DropCeiling" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem8"> Drop Ceiling</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem9" name="bulkAddLineItem9" value="Drywall" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem9"> Drywall</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem10" name="bulkAddLineItem10" value="DumpsterFees" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem10"> Dumpster Fees</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem11" name="bulkAddLineItem11" value="EgressWindows" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem11"> Egress Windows</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem12" name="bulkAddLineItem12" value="Electrical" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem12"> Electrical</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem13" name="bulkAddLineItem13" value="ExteriorDoors" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem13"> Exterior Doors</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem14" name="bulkAddLineItem14" value="ExteriorWork" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem14"> Exterior Work</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem15" name="bulkAddLineItem15" value="FinalCleanup" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem15"> Final Cleanup</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem16" name="bulkAddLineItem16" value="Framer" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem16"> Framer</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem17" name="bulkAddLineItem17" value="Garage" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem17"> Garage</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem18" name="bulkAddLineItem18" value="Handrails" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem18"> Handrails</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem19" name="bulkAddLineItem19" value="HardwoodFloor" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem19"> Hardwood Floor</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem20" name="bulkAddLineItem20" value="Hvac" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem20"> Hvac</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem21" name="bulkAddLineItem21" value="Insulation" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem21"> Insulation</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem22" name="bulkAddLineItem22" value="InteriorDoors" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem22"> Interior Doors</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem23" name="bulkAddLineItem23" value="InteriorWork" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem23"> Interior Work</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem24" name="bulkAddLineItem24" value="KitchenAppliances" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem24"> Kitchen Appliances</label><br>
+
+                    <input type="checkbox" id="bulkAddLineItem25" name="bulkAddLineItem25" value="KitchenRemodel" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem25"> Kitchen Remodel</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem26" name="bulkAddLineItem26" value="Lumber" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem26"> Lumber</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem27" name="bulkAddLineItem27" value="Office" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem27"> Office</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem28" name="bulkAddLineItem28" value="OutletSwitches" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem28"> Outlet/Switches</label><br>
+
+                    <input type="checkbox" id="bulkAddLineItem29" name="bulkAddLineItem29" value="Paint" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem29"> Paint</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem30" name="bulkAddLineItem30" value="PermitsZoning" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem30"> Permits/Zoning</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem31" name="bulkAddLineItem31" value="Plumbing" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem31"> Plumbing</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem32" name="bulkAddLineItem32" value="RefinishHardwood" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem32"> Refinish Hardwood</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem33" name="bulkAddLineItem33" value="Roof" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem33"> Roof</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem34" name="bulkAddLineItem34" value="Siding" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem34"> Siding</label><br>
+
+                    <input type="checkbox" id="bulkAddLineItem35" name="bulkAddLineItem35" value="SpotLights" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem35"> Spot Lights</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem36" name="bulkAddLineItem36" value="Staircase" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem36"> Staircase</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem37" name="bulkAddLineItem37" value="Stairs" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem37"> Stairs</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem38" name="bulkAddLineItem38" value="Study" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem38"> Study</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem39" name="bulkAddLineItem39" value="Tile" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem39"> Tile</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem40" name="bulkAddLineItem40" value="Trim" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem40"> Trim</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem41" name="bulkAddLineItem41" value="VinylFloor" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem41"> Vinyl Floor</label><br>
+                    
+                    <input type="checkbox" id="bulkAddLineItem42" name="bulkAddLineItem42" value="Windows" onchange="checkBoxChanged(id)">
+                    <label for="bulkAddLineItem42"> Windows</label><br>
+
+                    <button onclick="BulkAddRows()">Bulk Add</button>
                 </div>
             </div>
             <h>Estimate</h>

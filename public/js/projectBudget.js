@@ -1,11 +1,24 @@
 let tableData = [];
 var saveImminent = false;
+var tableName = NumberToString(sessionStorage.getItem("tableName").replaceAll(" ", "")) + "Budget";
+const checkBoxVal = new Array(41);
 
 function Start()
 {
 	//String with table name here
-	console.log(sessionStorage.getItem("tableName"));
+	console.log(tableName);
+	for (let i = 0; i < checkBoxVal.length; i++)
+	{
+		checkBoxVal[i] = false;
+	}
 	websocket();
+}
+
+function checkBoxChanged(lineNum)
+{
+	//console.log(lineNum.replaceAll("lineItem", ""));
+	lineNum = lineNum.replaceAll("bulkAddLineItem", "");
+	checkBoxVal[parseInt(lineNum) - 1] = !checkBoxVal[parseInt(lineNum) - 1];
 }
 
 function websocket()
@@ -17,6 +30,7 @@ function websocket()
 	ws.onopen = function (event)
 	{
 		//ws.send('Bazinga');
+		ws.send('RequestTable' + tableName);
 	};
 
 	ws.onmessage = function (event)
@@ -25,7 +39,6 @@ function websocket()
 		data = event.data;
 
 		tableData = JSON.parse(data);
-		//console.log("Loading page: " + document.URL);
 		tableGenTest();
 	
 	};
@@ -33,7 +46,7 @@ function websocket()
 	//CUSTOM FUNCTIONS
 	function sendTable(arr) 
 	{
-		ws.send("TableData: " + arr);
+		ws.send("TableData:" + tableName + "-:-" + arr);
 	}
 	websocket.sendTable = sendTable;
 
@@ -55,6 +68,50 @@ function websocket()
 	{
 		ws.send("ERROR " + event);
 	};
+
+	//////////////////////////////////////////////////////////
+	//Added without Will
+
+	function addRowData(projectName) 
+	{
+		var wsMessage = "AddLineItemWithName" + itemName;
+		ws.send(wsMessage);
+	}
+	websocket.addRowData = addRowData;
+
+	function removeRowFromTable(rowId, tableName) 
+	{
+		var wsMessage = "RemoveRowFromTable" + rowId + ":" + tableName;
+		ws.send(wsMessage);
+	}
+	websocket.removeRowFromTable = removeRowFromTable;
+
+	function addRowToTable(tableName) 
+	{
+		var wsMessage = "AddRowToTable" + tableName;
+		ws.send(wsMessage);
+	}
+	websocket.addRowToTable = addRowToTable;
+
+	//////////////////////////////////////////////////////////
+}
+
+function NumberToString(data)
+{
+	var convertedData = data
+
+	convertedData = convertedData.replaceAll('0', 'Zero');
+	convertedData = convertedData.replaceAll('1', 'One');
+	convertedData = convertedData.replaceAll('2', 'Two');
+	convertedData = convertedData.replaceAll('3', 'Three');
+	convertedData = convertedData.replaceAll('4', 'Four');
+	convertedData = convertedData.replaceAll('5', 'Five');
+	convertedData = convertedData.replaceAll('6', 'Six');
+	convertedData = convertedData.replaceAll('7', 'Seven');
+	convertedData = convertedData.replaceAll('8', 'Eight');
+	convertedData = convertedData.replaceAll('9', 'Nine');
+
+	return convertedData;
 }
 
 let hidden = true;
@@ -86,21 +143,18 @@ let rowNumber = 1;
 function tableGenTest()
 {
 	let tableKeys = Object.keys(tableData[0]);
-	for (i = 2; i < tableKeys.length; i++) 
+	for (i = 0; i < tableKeys.length; i++) 
 	{
 		dataTableHead += 
 		`<th id = "tableKey">${tableKeys[i]}</th>`
 	}
 	dataTableHead += 
 	`<th>
-		<button type="button" onclick="addProject()">
+		<button type="button" onclick="addLineItem()">
 			Add line item
 		</button>
 		<button type="button" onclick="saveTable()">
 			Save table
-		</button>
-		<button type="button" onclick="batchRows()">
-			Batch Add Rows
 		</button>
 	</th>`;
 	tableHead.innerHTML = dataTableHead;
@@ -108,50 +162,56 @@ function tableGenTest()
 	for (data of tableData)
 	{
 		dataHtml += `<tr id = "tableRow_${rowNumber}">`;
-		for (i = 2; i < tableKeys.length; i++)
+		for (i = 0; i < tableKeys.length; i++)
 		{
+			var cellID = tableKeys[i] + "" + i;
 			dataHtml +=
-			`<td id = "td" contenteditable="true" oninput="tableSaveTimer()">
+			/*`<td id = ${cellID} contenteditable="true" oninput="tableSaveTimer()">
+				${data[tableKeys[i]]}
+			</td>`*/
+			`<td id = "td"" contenteditable="true" oninput="tableSaveTimer()">
 				${data[tableKeys[i]]}
 			</td>`
 		}
-		dataHtml += `<td><button type="button" onclick="removeProject(this)">Remove line item</button></td></tr>`;
+		dataHtml += `<td><button type="button" onclick="removeLineItem(this)">Remove line item</button></td></tr>`;
 		rowNumber += 1;
 	}
 	tableBody.innerHTML = dataHtml;
 }
 
-function removeProject(element)
+function removeLineItem(element)
 {
 	elementToRemove = element.parentNode.parentNode;
 
 	console.log(element.parentNode.parentNode.id.replace("tableRow_", ""));
 	//console.log(elementToRemove);
-	websocket.removeRow(elementToRemove.id.replace("tableRow_", ""));
+	websocket.removeRowFromTable(elementToRemove.id.replace("tableRow_", ""), tableName);
 	elementToRemove.remove();
 }
 
-function addProject()
+function addLineItem(itemName = "Item Name")
 {
 	let tableKeys = Object.keys(tableData[0]);
 	dataHtml += `<tr id = "tableRow_${rowNumber}">`;
 	rowNumber += 1;
-	let keyName = "Item Name";
-	for (i = 2; i < tableKeys.length; i++) 
+	let keyName = itemName;
+	for (i = 0; i < tableKeys.length; i++) 
 	{
-		if(i >=3) keyName = 0;
-		dataHtml += `<td id = "td" contenteditable="true" oninput="tableSaveTimer()">${keyName}</td>`
+		var cellID = tableKeys[i] + "_" + i;
+		if(i != 0 && i != tableKeys.length - 1) keyName = 0;
+		else if (i == tableKeys.length - 1) keyName = "";
+		dataHtml += `<td id = ${cellID} contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`
 	}
 	dataHtml += `
 			<td>
-				<button type="button" onclick="removeProject(this)">
-					Remove Project
+				<button type="button" onclick="removeLineItem(this)">
+					Remove line Item
 				</button>
 			</td>
 		</tr>`;
 	tableBody.innerHTML = dataHtml;
 	
-	websocket.addRow();
+	websocket.addRowToTable(tableName);
 }
 
 function batchRows()
@@ -204,24 +264,20 @@ function saveTable()
 	for(i = 0; i < readKeys.length; i++)
 	{
 		keys[i] = readKeys[i].textContent;
-		//console.log("kEYS: " + keys[i]);
+		console.log("kEYS: " + keys[i]);
 	}
 	for(i = 0; i < readValues.length; i++)
 	{
 		values[i] = (readValues[i].textContent).replace(/(\n|\t)/gm, "");//((readValues[i].textContent.split("\n")[1]).split("\t"))[4];
-		//console.log(values[i]);
+		console.log(values[i]);
     }
 	
 	for (let i = 0, ii = 0; i < arr.length; i++, ii++) 
 	{
-		if(ii == 5)
-		{
-			ii = 0;
-		}
-		arr[i] = {[keys[ii]] : values[i]};
+		arr[i] = {[keys[ii%keys.length]] : values[i]};
 		//console.log(JSON.stringify(arr[i]));
 	}
-
+	console.log(JSON.stringify(arr));
 	//send
 	websocket.sendTable(JSON.stringify(arr));
 }
@@ -309,5 +365,14 @@ function dropProject(ev)
 }
 function BulkAddRows()
 {
-
+	for (j = 0; j < checkBoxVal.length; j++)
+	{
+		if(checkBoxVal[j])
+		{
+			console.log(("bulkAddLineItem" + (j + 1)));
+			addLineItem(document.getElementById(("bulkAddLineItem" + (j + 1))).nextElementSibling.innerHTML);
+			document.getElementById(("bulkAddLineItem" + (j + 1))).checked = false;
+		}
+		checkBoxVal[j] = false;
+	}
 }

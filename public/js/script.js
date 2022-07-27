@@ -1,4 +1,6 @@
 let tableData = [];
+let projectNameToRowID = {};
+var numProjects = 0;
 
 function Start()
 {
@@ -15,6 +17,7 @@ function websocket()
 	ws.onopen = function (event)
 	{
 		//ws.send('Bazinga');
+		ws.send('RequestTableProjectList');
 	};
 
 	ws.onmessage = function (event)
@@ -25,7 +28,6 @@ function websocket()
 		tableData = JSON.parse(data);
 		//console.log("Loading page: " + document.URL);
 		generateTable();
-	
 	};
 
 	//CUSTOM FUNCTIONS
@@ -51,6 +53,7 @@ function websocket()
 	function addTable(tableName)
 	{
 		console.log(tableName);
+		tableName = NumberToString(tableName);
 		ws.send("AddTable " + tableName);
 	}
 	websocket.addTable = addTable;
@@ -66,17 +69,74 @@ function websocket()
 	{
 		ws.send("ERROR " + event);
 	};
+
+	//////////////////////////////////////////////////////////
+	//Added without Will
+
+	function addRowData(projectName) 
+	{
+		var wsMessage = "AddRowData" + projectName;
+		ws.send(wsMessage);
+	}
+	websocket.addRowData = addRowData;
+
+	function removeRowFromTable(rowId, tableName) 
+	{
+		var wsMessage = "RemoveRowFromTable" + rowId + ":" + tableName;
+		ws.send(wsMessage);
+	}
+	websocket.removeRowFromTable = removeRowFromTable;
+
+	function addRowToTable(tableName) 
+	{
+		var wsMessage = "AddRowToTable" + tableName;
+		ws.send(wsMessage);
+	}
+	websocket.addRowToTable = addRowToTable;
+
+	//////////////////////////////////////////////////////////
+}
+
+function NumberToString(data)
+{
+	var convertedData = data
+
+	convertedData = convertedData.replaceAll('0', 'Zero');
+	convertedData = convertedData.replaceAll('1', 'One');
+	convertedData = convertedData.replaceAll('2', 'Two');
+	convertedData = convertedData.replaceAll('3', 'Three');
+	convertedData = convertedData.replaceAll('4', 'Four');
+	convertedData = convertedData.replaceAll('5', 'Five');
+	convertedData = convertedData.replaceAll('6', 'Six');
+	convertedData = convertedData.replaceAll('7', 'Seven');
+	convertedData = convertedData.replaceAll('8', 'Eight');
+	convertedData = convertedData.replaceAll('9', 'Nine');
+
+	return convertedData;
 }
 
 function createProject()
 {
-	//console.log(document.getElementById('newProjectText').value.replaceAll(" ", ""))
-	websocket.addTable((document.getElementById('newProjectText').value.replaceAll(" ", "") + "Budget"));
-	websocket.addRow(); //This row needs added with the name of a new project
+	var projectName = document.getElementById('newProjectText').value;
+	var processedProjectName = NumberToString(projectName).replaceAll(" ", "");
+
+	if (processedProjectName in projectNameToRowID) return;
+	projectNameToRowID[processedProjectName] = (i + 1);
+	console.log("Project Name In: " + projectName.replaceAll(" ", "") + "Budget");
+	
+	websocket.addTable(projectName.replaceAll(" ", "") + "Budget");
+	websocket.addRowData(projectName);
+	//websocket.addRowToTable(projectName.replaceAll(" ", "") + "Budget");
+	document.getElementById("ActiveList").innerHTML += getHtmlForProjectList(numProjects, projectName);
+	numProjects += 1;
 }
-function removeTable(data)
+function removeTable(element, data)
 {
-	websocket.dropTable(data)
+	//websocket.removeRowData((document.getElementById('newProjectText').value.replaceAll(" ", "")));
+	websocket.removeRowFromTable(projectNameToRowID[data], 'ProjectList');
+	websocket.dropTable((data + "Budget"));
+	document.getElementById(element).remove();
+	numProjects -= 1;
 }
 
 let isTableGenerated = false;
@@ -95,13 +155,19 @@ function generateTable()
 		{
 			switch(tableData[i].ProjectStatus) 
 			{
-				case 0: topDataHtml += getHtmlForProjectList(i, tableData);
+				case 0: topDataHtml += getHtmlForProjectList(i, tableData[i].ProjectName);
 					break;
-				case 1: middleDataHtml += getHtmlForProjectList(i, tableData);
+				case 1: middleDataHtml += getHtmlForProjectList(i, tableData[i].ProjectName);
 					break;
-				case 2: bottomDataHtml += getHtmlForProjectList(i, tableData);
+				case 2: bottomDataHtml += getHtmlForProjectList(i, tableData[i].ProjectName);
 					break;
 			}
+			
+			var processedProjectName = NumberToString(tableData[i].ProjectName).replaceAll(" ", "");
+			projectNameToRowID[processedProjectName] = (i + 1);
+			console.log("Project Name In: " + processedProjectName);
+
+			numProjects += 1;
     	}
 		top.innerHTML = topDataHtml;
     	middle.innerHTML = middleDataHtml;
@@ -193,7 +259,7 @@ for (let i = 0; i < coll.length; i++)
 	});
 }
 
-function getHtmlForProjectList(i, tb)
+function getHtmlForProjectList(i, projectName)
 {
 	/*return `
 		<div id="projectList" class="projectListing">
@@ -209,23 +275,33 @@ function getHtmlForProjectList(i, tb)
 	newElement.setAttribute("draggable", true);
 	newElement.setAttribute("ondragstart", "drag(event)");
 	newElement.setAttribute("class", "draggableProject");
-	newElement.innerHTML = tb[i].ProjectName;
+	newElement.innerHTML = projectName;
+
+	var infoButton = document.createElement('img');
+	//infoButton.setAttribute("onclick", functionCall);
+	infoButton.setAttribute("class", "projectInfoButton");
+	infoButton.setAttribute("src", "images/infoIcon.png")
+	//buttonTwo.innerHTML = "Delete Project";
 
 	var button = document.createElement('button');
-	button.setAttribute("onclick", "window.location.href='html/projectBudget.html'; sessionStorage.setItem('tableName', 'Bazang');");
+	button.setAttribute("onclick", "window.location.href='html/projectBudget.html'; sessionStorage.setItem('tableName','" + projectName + "');");
 	button.setAttribute("class", "anybutton");
 	button.innerHTML = "Budget";
 
-	var buttonTwo = document.createElement('img');
-	var projectName = tb[i].ProjectName;
-	//How do I call function with arguement passed in *******************************************************
-	buttonTwo.setAttribute("onclick", "remove");
-	buttonTwo.setAttribute("class", "removeProjectButton");
-	buttonTwo.setAttribute("src", "images/removeIcon.png")
-	buttonTwo.innerHTML = "Delete Project";
+	var removeProjectButton = document.createElement('img');
+	//This project name is not currently the table which holds its budget
+	var functionCall = "removeTable('" + newElement.id + "','" + NumberToString(projectName).replaceAll(" ", "") + "')";
 
+	//How do I call function with arguement passed in *******************************************************
+	//removeProjectButton.setAttribute("onclick", functionCall);
+	removeProjectButton.setAttribute("onclick", functionCall);
+	removeProjectButton.setAttribute("class", "removeProjectButton");
+	removeProjectButton.setAttribute("src", "images/removeIcon.png")
+	//removeProjectButton.innerHTML = "Delete Project";
+
+	newElement.appendChild(infoButton);
 	newElement.appendChild(button);
-	newElement.appendChild(buttonTwo);
+	newElement.appendChild(removeProjectButton);
 
 	return newElement.outerHTML;
 	//return `<div id=${tb[i].ProjectName} draggable="true" ondragstart="drag(event)" class="draggableProject">${tb[i].ProjectName}</div>`
