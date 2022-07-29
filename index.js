@@ -117,8 +117,8 @@ function connectWebsocket(server)
 				var params = e.data.replace("AddRowToTable", "");
 				console.log(e.data + " JHBJD");
 				var queryRequest = 'INSERT INTO ' + params.split(':')[0]
-				queryRequest += `(Row, Item, Quantity, Cost, 'Subcontractor Fee', 'Material Cost', 'Prelim Cost', 'Final Cost', 'Proft Margin', Notes)`;
-				queryRequest += 'VALUES (' + params.split(':')[0] + ', \'Item Name\', \'0\', \'0\', \'0\', \'0\', \'0\', \'0\', \'0\', \'\')'
+				queryRequest += `(Row, Item, Quantity, Cost, 'Subcontractor Fee', 'Material Cost', 'Prelim Cost', 'Final Cost', 'Profit Margin', Notes)`;
+				queryRequest += 'VALUES (' + params.split(':')[1] + ', \'Item Name\', \'0\', \'0\', \'0\', \'0\', \'0\', \'0\', \'0\', \'\')'
 				//db.run(`INSERT INTO BudgetEstimate DEFAULT VALUES`, function(err) 
 				db.run(queryRequest, function(err) 
 				{
@@ -169,42 +169,51 @@ function connectWebsocket(server)
 				db.serialize(() => 
 				{
 					ri = 0;
-					for(i  = 0; i < recData.length; i++)
+					for(i  = 0; i < recData.length - 1; i++)
 					{
-						if(i%5 == 0)
+						if(i%9 == 0)
 						{
-							ri = i/5 + 1;
+							
 							//console.log(ri);
 						}
 
+						if(recData[i].Row != undefined)
+						{
+							ri = recData[i].Row;
+							//var queryRequest = `UPDATE '${tableName}' SET Item='${recData[i].Item}' WHERE rowid='${ri}'`;
+							var queryRequest = 'UPDATE ' + tableName + ' SET Row=' + recData[i].Row + ' WHERE Row=' + ri;
+							console.log(queryRequest);
+							db.run(queryRequest, /*[param1, param2],*/ function (err, result) 
+							{
+								if (err) throw err;
+    							console.log(result + " record(s) updated");
+							});
+						}
 						if(recData[i].Item != undefined)
 						{
 							//var queryRequest = `UPDATE '${tableName}' SET Item='${recData[i].Item}' WHERE rowid='${ri}'`;
-							var queryRequest = 'UPDATE ' + tableName + ' SET Item=\'' + recData[i].Item + '\' WHERE rowid=' + ri;
+							var queryRequest = 'UPDATE ' + tableName + ' SET Item=\'' + recData[i].Item + '\' WHERE Row=' + ri;
 							console.log(queryRequest);
-							db.run(queryRequest, /*[param1, param2],*/ (err) => 
+							db.run(queryRequest, /*[param1, param2],*/ function (err, result) 
 							{
-								if (err) 
-								{
-									console.log(err)
-								} 
+								if (err) throw err;
+    							//console.log(result.message + " record(s) updated");
 							});
 						}
 						if(recData[i].Quantity != undefined)
 						{
-							var queryRequest = 'UPDATE ' + tableName + ' SET Quantity=' + recData[i].Quantity + ' WHERE rowid=' + ri;
+							var queryRequest = 'UPDATE ' + tableName + ' SET Quantity=' + recData[i].Quantity + ' WHERE Row=' + ri;
 							console.log(queryRequest);
-							db.run(queryRequest, /*[param1, param2],*/ (err) => 
+							db.run(queryRequest, /*[param1, param2],*/ function (err, result) 
+							//db.run("UPDATE tkhnlgnkfBudget SET Item='jnjm'", /*[param1, param2],*/ function (err, result) 
 							{
-								if (err) 
-								{
-									console.log(err)
-								} 
+								if (err) throw err;
+    							//console.log(result.message + " record(s) updated");
 							});
 						}
 						if(recData[i].Cost != undefined)
 						{
-							var queryRequest = 'UPDATE ' + tableName + ' SET Cost=' + recData[i].Cost + ' WHERE rowid=' + ri;
+							var queryRequest = 'UPDATE ' + tableName + ' SET Cost=' + recData[i].Cost + ' WHERE Row=' + ri;
 							db.run(queryRequest, /*[param1, param2],*/ (err) => 
 							{
 								if (err) 
@@ -215,7 +224,7 @@ function connectWebsocket(server)
 						}
 						if(recData[i].SubcontractorFee != undefined)
 						{
-							var queryRequest = 'UPDATE ' + tableName + ' SET SubcontractorFee=' + recData[i].SubcontractorFee + ' WHERE rowid=' + ri;
+							var queryRequest = 'UPDATE ' + tableName + ' SET SubcontractorFee=' + recData[i].SubcontractorFee + ' WHERE Row=' + ri;
 							db.run(queryRequest, /*[param1, param2],*/ (err) => 
 							{
 								if (err) 
@@ -226,7 +235,7 @@ function connectWebsocket(server)
 						}
 						if(recData[i].MaterialCost != undefined)
 						{
-							var queryRequest = 'UPDATE ' + tableName + ' SET MaterialCost=' + recData[i].MaterialCost + ' WHERE rowid=' + ri;
+							var queryRequest = 'UPDATE ' + tableName + ' SET MaterialCost=' + recData[i].MaterialCost + ' WHERE Row=' + ri;
 							db.run(queryRequest, /*[param1, param2],*/ (err) => 
 							{
 								if (err) 
@@ -237,7 +246,7 @@ function connectWebsocket(server)
 						}
 						if(recData[i].PrelimCost != undefined)
 						{
-							var queryRequest = 'UPDATE ' + tableName + ' SET PrelimCost=' + recData[i].PrelimCost + ' WHERE rowid=' + ri;
+							var queryRequest = 'UPDATE ' + tableName + ' SET PrelimCost=' + recData[i].PrelimCost + ' WHERE Row=' + ri;
 							db.run(queryRequest, /*[param1, param2],*/ (err) => 
 							{
 								if (err) 
@@ -248,7 +257,7 @@ function connectWebsocket(server)
 						}
 						if(recData[i].FinalCost != undefined)
 						{
-							var queryRequest = 'UPDATE ' + tableName + ' SET FinalCost=' + recData[i].FinalCost + ' WHERE rowid=' + ri;
+							var queryRequest = 'UPDATE ' + tableName + ' SET FinalCost=' + recData[i].FinalCost + ' WHERE Row=' + ri;
 							db.run(queryRequest, /*[param1, param2],*/ (err) => 
 							{
 								if (err) 
@@ -257,9 +266,20 @@ function connectWebsocket(server)
 								} 
 							});
 						}
-						if(recData[i].ProftMargin != undefined)
+						if(recData[i].ProfitMargin != undefined)
 						{
-							var queryRequest = 'UPDATE ' + tableName + ' SET ProftMargin=' + recData[i].ProftMargin + ' WHERE rowid=' + ri;
+							var queryRequest = 'UPDATE ' + tableName + ' SET ProfitMargin=' + recData[i].ProfitMargin + ' WHERE Row=' + ri;
+							db.run(queryRequest, /*[param1, param2],*/ (err) => 
+							{
+								if (err) 
+								{
+									console.log(err)
+								} 
+							});
+						}
+						if(recData[i].Notes != undefined)
+						{
+							var queryRequest = 'UPDATE ' + tableName + ' SET Notes=\'' + recData[i].Notes + '\' WHERE Row=' + ri;
 							db.run(queryRequest, /*[param1, param2],*/ (err) => 
 							{
 								if (err) 
@@ -318,7 +338,7 @@ function connectWebsocket(server)
 					"Material Cost"	REAL NOT NULL DEFAULT 0.0,
 					"Prelim Cost"	REAL NOT NULL DEFAULT 0.0,
 					"Final Cost"	REAL NOT NULL DEFAULT 0.0,
-					"Proft Margin"	REAL NOT NULL DEFAULT 0.0,
+					"Profit Margin"	REAL NOT NULL DEFAULT 0.0,
 					"Notes"	TEXT NOT NULL DEFAULT ''
 				)`;
 				
@@ -332,7 +352,7 @@ function connectWebsocket(server)
 					{
 						console.log(tableName);
 						var queryRequest = 'INSERT INTO ' + tableName
-						queryRequest += `(Row, Item, Quantity, Cost, 'Subcontractor Fee', 'Material Cost', 'Prelim Cost', 'Final Cost', 'Proft Margin', Notes)`;
+						queryRequest += `(Row, Item, Quantity, Cost, 'Subcontractor Fee', 'Material Cost', 'Prelim Cost', 'Final Cost', 'Profit Margin', Notes)`;
 						queryRequest += 'VALUES (\'1\', \'Item Name\', \'0\', \'0\', \'0\', \'0\', \'0\', \'0\', \'0\', \'\')'
 						//db.run(`INSERT INTO BudgetEstimate DEFAULT VALUES`, function(err) 
 						db.run(queryRequest, function(err) 

@@ -30,12 +30,7 @@ body {
 .projectOverview {
   position: absolute;
   right: 0px;
-  display: grid;
-  grid-template-areas:
-  'null null null'
-  'null null null'
-  'null null null'
-  'null null null';
+  display: inline;
   row-gap: 10px;
   column-gap: 5px;
   padding: 10px;

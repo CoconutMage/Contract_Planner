@@ -158,7 +158,7 @@ function tableGenTest()
 	}
 	dataTableHead += 
 	`<th>
-		<button type="button" class="anyButton" onclick="addLineItem()">
+		<button type="button" class="anyButton" onclick="addLineItem(null, true)">
 			Add line item
 		</button>
 		<button type="button" class="anyButton" onclick="saveTable()">
@@ -169,7 +169,7 @@ function tableGenTest()
 
 	for (data of tableData)
 	{
-		addLineItem("x", data);
+		addLineItem(data, false);
 		/*
 		dataHtml += `<tr id = "tableRow_${rowNumber}">`;
 		for (i = 0; i < tableKeys.length; i++)
@@ -199,7 +199,7 @@ function removeLineItem(element)
 	elementToRemove.remove();
 }
 
-function addLineItem(itemName = "Item Name", data = null)
+function addLineItem(data, isNew, itemName = "Item Name")
 {
 	let tableKeys = Object.keys(tableData[0]);
 	dataHtml += `<tr id = "tableRow_${rowNumber}">`;
@@ -218,15 +218,19 @@ function addLineItem(itemName = "Item Name", data = null)
 			keyName = data[tableKeys[i]];
 		}
 
-		if (i != 0) dataHtml += `<td id = ${cellID} contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`
-		else dataHtml += `<td id = ${cellID} draggable="true" ondragstart="rowDragStart(event)" ondragover="allowDrop(event)" ondrop="rowDrop(event)" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`
+		//if (i != 0) dataHtml += `<td id = ${cellID} contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`
+		if (i != 0) dataHtml += `<td id = "td" contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`
+		else dataHtml += `<td id = "td" draggable="true" ondragstart="rowDragStart(event)" ondragover="allowDrop(event)" ondrop="rowDrop(event)" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`
 	}
 	dataHtml += `<td><button type="button" class="anyButton" onclick="removeLineItem(this)">Remove line item</button> <button type="button" class="anyButton" onclick="removeLineItem(this)">Change</button></td></tr>`;
-	rowNumber += 1;
 	tableBody.innerHTML = dataHtml;
-	
-	if (itemName == "Item Name") websocket.addRowToTable(tableName, rowNumber);
-	else websocket.addRowToTableWithValue(tableName, itemName, rowNumber);
+	console.log(itemName);
+	if(isNew)
+	{
+		if (itemName == "Item Name") websocket.addRowToTable(tableName, rowNumber);
+		else websocket.addRowToTableWithValue(tableName, itemName, rowNumber);
+	}
+	rowNumber += 1;
 }
 
 function tableSaveTimer()
@@ -254,7 +258,7 @@ function saveTable()
 	for(i = 0; i < readValues.length; i++)
 	{
 		values[i] = (readValues[i].textContent).replace(/(\n|\t)/gm, "");//((readValues[i].textContent.split("\n")[1]).split("\t"))[4];
-		console.log(values[i]);
+		console.log(readValues[i].textContent);
     }
 	
 	for (let i = 0, ii = 0; i < arr.length; i++, ii++) 
@@ -356,7 +360,7 @@ function BulkAddRows()
 		if(checkBoxVal[j])
 		{
 			console.log(("bulkAddLineItem" + (j + 1)));
-			addLineItem(document.getElementById(("bulkAddLineItem" + (j + 1))).nextElementSibling.innerHTML);
+			addLineItem(null, false, document.getElementById(("bulkAddLineItem" + (j + 1))).nextElementSibling.innerHTML);
 			document.getElementById(("bulkAddLineItem" + (j + 1))).checked = false;
 		}
 		checkBoxVal[j] = false;
