@@ -342,16 +342,34 @@ function allowDrop(ev)
 }
 function rowDragStart(ev)
 {
-	console.log(ev.target);
-	ev.dataTransfer.setData("rowDragging", ev.target.id);
+	console.log(ev.target.parentNode.id);
+	ev.dataTransfer.setData("rowDragging", ev.target.parentNode.id);
 }
 function rowDrop(ev)
 {
-	console.log(ev.target);
+	console.log(ev.target.parentNode.id);
 	ev.preventDefault();
 	var data = ev.dataTransfer.getData("rowDragging");
+	console.log(data);
+
+	var rowHtml = ev.target.parentNode.innerHTML;
+	var rowNum = document.getElementById(data).firstElementChild.innerHTML;
+	var rowNumDropped = ev.target.innerHTML;
+	var droppedRow = ev.target.parentNode;
+	
+	droppedRow.innerHTML = document.getElementById(data).innerHTML;
+	droppedRow.firstElementChild.innerHTML = rowNumDropped;
+
+	document.getElementById(data).innerHTML = rowHtml;
+	//document.getElementById(data).firstElementChild.innerHTML = rowNum;
+	//ev.target.innerHTML = document.getElementById(data).firstElementChild.innerHTML;
+	console.log(document.getElementById(data).firstElementChild.innerHTML);
+	console.log(rowNum);
+	document.getElementById(data).firstElementChild.innerHTML = rowNum;
+
 	//ev.target.nextElementSibling.appendChild(document.getElementById(data));
 	//Change project status here
+
 }
 function BulkAddRows()
 {

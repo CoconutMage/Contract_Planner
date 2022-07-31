@@ -173,15 +173,16 @@ function connectWebsocket(server)
 					{
 						if(i%9 == 0)
 						{
-							
+							ri = (i%9) + 1;
 							//console.log(ri);
 						}
 
 						if(recData[i].Row != undefined)
 						{
-							ri = recData[i].Row;
+							//ri = recData[i].Row;
+							ri = (i%9) + 1;
 							//var queryRequest = `UPDATE '${tableName}' SET Item='${recData[i].Item}' WHERE rowid='${ri}'`;
-							var queryRequest = 'UPDATE ' + tableName + ' SET Row=' + recData[i].Row + ' WHERE Row=' + ri;
+							var queryRequest = 'UPDATE ' + tableName + ' SET Row=' + ri + ' WHERE Row=' + recData[i].Row;
 							console.log(queryRequest);
 							db.run(queryRequest, /*[param1, param2],*/ function (err, result) 
 							{
