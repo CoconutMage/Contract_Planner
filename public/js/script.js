@@ -23,7 +23,7 @@ function websocket()
 	ws.onmessage = function (event)
 	{
 		data = [];
-		data = event.data;
+		data = event.data.split('-:-')[0];
 
 		tableData = JSON.parse(data);
 		//console.log("Loading page: " + document.URL);
@@ -93,6 +93,13 @@ function websocket()
 		ws.send(wsMessage);
 	}
 	websocket.addRowToTable = addRowToTable;
+
+	function updateProjectStatus(tableName, status) 
+	{
+		var wsMessage = "UpdateProjectStatus:" + tableName + ":" + status;
+		ws.send(wsMessage);
+	}
+	websocket.updateProjectStatus = updateProjectStatus;
 
 	//////////////////////////////////////////////////////////
 }
@@ -190,47 +197,6 @@ function generateTable()
   //isTableGenerated = true;
 }
 
-//This function is crap and doesnt work
-function projectStatusChanger()
-{
-	//The database deals in an array that represents a dictionary
-	//This simple function to change project status is something like BigO(n^2) or something super inefficient
-	let keys = [];
-	let values = [];
-	let readKeys = document.querySelectorAll('[id=tableKey]');
-	let readValues = document.querySelectorAll('[id=td]');
-	let arr = new Array(readValues.length);
-
-	for(i = 0; i < readKeys.length; i++)
-	{
-		keys[i] = readKeys[i].textContent;
-		//console.log(keys[i]);
-	}
-	for(i = 0; i < readValues.length; i++)
-	{
-		values[i] = readValues[i].textContent;
-		//console.log(values[i]);
-	}
-	
-	for (let i = 0, ii = 0; i < arr.length; i++, ii++) 
-	{
-		if(ii == 5)
-		{
-			ii = 0;
-		}
-		arr[i] = {[keys[ii]] : values[i]};
-		console.log(JSON.stringify(arr[i]));
-	}
-	//let tableKeys = Object.keys(tableData[0]);
-	for (i = 2; i < tableData.length; i++) 
-	{
-		dataTableHead += 
-		`<th id = "tableKey">${tableKeys[i]}</th>`
-	}
-
-	websocket.sendTable(JSON.stringify(arr));
-}
-
 //code for the collapsible thing
 var coll = document.getElementsByClassName("collapsibleButton");
 
@@ -239,7 +205,7 @@ for (let i = 0; i < coll.length; i++)
 	coll[i].addEventListener("click", function ()
 	{
 		//theres gotta be a better way to get the image from under a div then this but
-		var imgElem = this.firstChild.nextElementSibling;
+		var imgElem = this.firstChild.nextElementSibling.nextElementSibling;
 		this.classList.toggle("active");
 		var content = this.nextElementSibling;
 		if (content.style.display === "grid")
@@ -319,8 +285,11 @@ function dropProject(ev)
 	ev.preventDefault();
 	var data = ev.dataTransfer.getData("text");
 	console.log(data);
-	console.log(ev.target);
-	console.log(ev.target.nextElementSibling);
+	console.log(ev.target.firstElementChild.innerHTML);
+	console.log(document.getElementById(data).innerHTML.split('"')[0].split('<')[0]);
+	if (ev.target.firstElementChild.innerHTML == 0) websocket.updateProjectStatus(document.getElementById(data).innerHTML.split('"')[0].split('<')[0], 0);
+	else if (ev.target.firstElementChild.innerHTML == 1) websocket.updateProjectStatus(document.getElementById(data).innerHTML.split('"')[0].split('<')[0], 1);
+	else if (ev.target.firstElementChild.innerHTML == 2) websocket.updateProjectStatus(document.getElementById(data).innerHTML.split('"')[0].split('<')[0], 2);
 	ev.target.nextElementSibling.appendChild(document.getElementById(data));
 	//Change project status here
 }

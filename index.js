@@ -13,9 +13,10 @@ const db = new sqlite3.Database('database.db');
 //sendFile will go here
 //include subdir
 app.use(express.static('public'));
+//app.listen(port);
 
 //I think this actually starts both the webapp and the websocket
-const server = http.createServer(app).listen(port);
+const server = http.createServer(app).listen(port);//(port, "0.0.0.0");
 console.log("Server started at http:localhost/:" + port + " On " + Date());
 connectWebsocket(server);
 
@@ -66,8 +67,8 @@ function connectWebsocket(server)
 
 			if (e.data.includes("RequestTable"))
 			{
-				console.log("Requesting: " + e.data.replace("RequestTable", ""));
-				var tableRequest = 'SELECT * FROM ' + e.data.replace("RequestTable", "")
+				console.log("Requesting: " + e.data.replace("RequestTable", "").split(':')[0]);
+				var tableRequest = `SELECT * FROM '${e.data.replace("RequestTable", "").split(':')[0]}'`;
 				db.serialize(() => 
 				{
 					/*db.all('SELECT * FROM BudgetEstimate', //[param1, param2],// (err, result) => */
@@ -87,7 +88,7 @@ function connectWebsocket(server)
 							
 							wss.clients.forEach((client) => 
 							{
-								client.send(JSON.stringify(tableData));
+								client.send(JSON.stringify(tableData) + '-:-' + e.data.replace("RequestTable", "").split(':')[1]);
 							});
 						}
 					});
@@ -118,7 +119,7 @@ function connectWebsocket(server)
 				console.log(e.data + " JHBJD");
 				var queryRequest = 'INSERT INTO ' + params.split(':')[0]
 				queryRequest += `(Row, Item, Quantity, Cost, 'Subcontractor Fee', 'Material Cost', 'Prelim Cost', 'Final Cost', 'Profit Margin', Notes)`;
-				queryRequest += 'VALUES (' + params.split(':')[1] + ', \'Item Name\', \'0\', \'0\', \'0\', \'0\', \'0\', \'0\', \'0\', \'\')'
+				queryRequest += 'VALUES (' + params.split(':')[1] + ', \'Item Name\', \'0\', \'0\', \'' + params.split(':')[1] + 'SubSplit\', \'' + params.split(':')[1] + 'MatSplit\', \'0\', \'0\', \'0\', \'\')'
 				//db.run(`INSERT INTO BudgetEstimate DEFAULT VALUES`, function(err) 
 				db.run(queryRequest, function(err) 
 				{
@@ -129,6 +130,78 @@ function connectWebsocket(server)
 					else
 					{
 						console.log("Row Added");
+
+						var splitTableName = params.split(':')[1] + 'SubSplit';
+
+						sql = `CREATE TABLE IF NOT EXISTS '${splitTableName}'
+						(
+							"Name"	TEXT NOT NULL DEFAULT 'Item Name',
+							"Cost"	REAL NOT NULL DEFAULT 0.0,
+							"Notes"	TEXT NOT NULL DEFAULT '',
+							"Paid" BOOLEAN NOT NULL DEFAULT '0'
+						)`;
+						
+						db.run(sql, function(err) 
+						{
+							if (err) 
+							{
+								return console.log(err.message);
+							}
+							else
+							{
+								var queryRequest = `INSERT INTO '${splitTableName}'`;
+								queryRequest += `(Name, Cost, Notes, Paid)`;
+								queryRequest += 'VALUES (\'\', \'0\', \'\', \'0\')'
+								//db.run(`INSERT INTO BudgetEstimate DEFAULT VALUES`, function(err) 
+								db.run(queryRequest, function(err) 
+								{
+									if (err) 
+									{
+									return console.log(err.message);
+									}
+									else
+									{
+										console.log("Row Added");
+									}
+								});
+							}
+						});
+
+						var matTableName = params.split(':')[1] + 'MatSplit';
+
+						sql = `CREATE TABLE IF NOT EXISTS '${matTableName}'
+						(
+							"Name"	TEXT NOT NULL DEFAULT 'Item Name',
+							"Cost"	REAL NOT NULL DEFAULT 0.0,
+							"Notes"	TEXT NOT NULL DEFAULT '',
+							"Paid" BOOLEAN NOT NULL DEFAULT 'FALSE'
+						)`;
+						
+						db.run(sql, function(err) 
+						{
+							if (err) 
+							{
+								return console.log(err.message);
+							}
+							else
+							{
+								var queryRequest = `INSERT INTO '${matTableName}'`;
+								queryRequest += `(Name, Cost, Notes, Paid)`;
+								queryRequest += 'VALUES (\'\', \'0\', \'\', \'0\')'
+								//db.run(`INSERT INTO BudgetEstimate DEFAULT VALUES`, function(err) 
+								db.run(queryRequest, function(err) 
+								{
+									if (err) 
+									{
+									return console.log(err.message);
+									}
+									else
+									{
+										console.log("Row Added");
+									}
+								});
+							}
+						});
 					}
 				});
 			}
@@ -151,6 +224,22 @@ function connectWebsocket(server)
 					else
 					{
 						console.log(rowid);
+					}
+				});
+			}
+
+			if(e.data.includes("UpdateProjectStatus"))
+			{
+				var params = e.data.replace("UpdateProjectStatus:", "").split(':');
+
+				var queryRequest = 'UPDATE ProjectList SET ProjectStatus=' + params[1] + ' WHERE ProjectName=\'' + params[0] + '\'';
+				console.log(queryRequest);
+				//db.run(`DELETE FROM ? WHERE rowid=?`,[tableName, rowid], function(err) 
+				db.run(queryRequest, function(err) 
+				{
+					if (err) 
+					{
+						return console.log(err.message);
 					}
 				});
 			}
@@ -335,8 +424,8 @@ function connectWebsocket(server)
 					"Item"	TEXT NOT NULL DEFAULT 'Item Name',
 					"Quantity"	INTEGER NOT NULL DEFAULT 0,
 					"Cost"	REAL NOT NULL DEFAULT 0.0,
-					"Subcontractor Fee"	REAL NOT NULL DEFAULT 0.0,
-					"Material Cost"	REAL NOT NULL DEFAULT 0.0,
+					"Subcontractor Fee"	TEXT NOT NULL DEFAULT 0.0,
+					"Material Cost"	TEXT NOT NULL DEFAULT 0.0,
 					"Prelim Cost"	REAL NOT NULL DEFAULT 0.0,
 					"Final Cost"	REAL NOT NULL DEFAULT 0.0,
 					"Profit Margin"	REAL NOT NULL DEFAULT 0.0,
@@ -354,7 +443,7 @@ function connectWebsocket(server)
 						console.log(tableName);
 						var queryRequest = 'INSERT INTO ' + tableName
 						queryRequest += `(Row, Item, Quantity, Cost, 'Subcontractor Fee', 'Material Cost', 'Prelim Cost', 'Final Cost', 'Profit Margin', Notes)`;
-						queryRequest += 'VALUES (\'1\', \'Item Name\', \'0\', \'0\', \'0\', \'0\', \'0\', \'0\', \'0\', \'\')'
+						queryRequest += 'VALUES (\'1\', \'Item Name\', \'0\', \'0\', \'\', \'\', \'0\', \'0\', \'0\', \'\')'
 						//db.run(`INSERT INTO BudgetEstimate DEFAULT VALUES`, function(err) 
 						db.run(queryRequest, function(err) 
 						{

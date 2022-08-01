@@ -5,9 +5,9 @@
 	<body onload="Start()">
 		<div class="projectOverview">
 			<p class="header">Project Overview</p>
-			<textarea>Total Price: $1000</textarea>
-			<textarea>Total Cost: $800</textarea>
-			<textarea>Payments Recieved: $300</textarea>
+			<text contenteditable="false">Total Price: $1000</text>
+			<text contenteditable="false">Total Cost: $800</text>
+			<text contenteditable="false">Payments Recieved: $300</text>
 		</div>
 		<div id="TheBigOne" class="theBigOne">
 			<h class="header">Projects</h>
@@ -22,6 +22,7 @@
 			</div>
 	
 			<div input="button" id="ActiveListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsibleButton">
+				<text style="display:none">0</text>
 				<img src="images/dropDownArrowOpen.png" id="img" class="collapsibleArrowImageOpen" style="pointer-events: none;"></img>
 				<!--id="activeCollapsibleArrowImage"-->
 				<text style="padding-left: 10px; pointer-events: none;">Active</text>
@@ -29,12 +30,14 @@
 			<div id="ActiveList" class="collapsibleList" style="display: none"></div>
 
 			<div input="button" id="ProposalListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsibleButton">
+				<text style="display:none">1</text>
 				<img src="images/dropDownArrowOpen.png" id="img" class="collapsibleArrowImageOpen" style="pointer-events: none;"></img>
 				<text style="padding-left: 10px; pointer-events: none;">Proposals</text>
 			</div>
 			<div id="ProposalList" class="collapsibleList" style="display: none"></div>
 
 			<div input="button" id="CompletedListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsibleButton">
+				<text style="display:none">2</text>
 				<img src="images/dropDownArrowOpen.png" id="img" class="collapsibleArrowImageOpen" style="pointer-events: none;"></img>
 				<text style="padding-left: 10px; pointer-events: none;">Completed</text>
 			</div>

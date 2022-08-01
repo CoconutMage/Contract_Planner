@@ -13,10 +13,20 @@ body {
     background: #487878; 
   }
   
+  .tableCellDropdown {
+    width: 20px;
+    height: 18px;
+    background: #487878;
+  }
+
   table, th, td {
     border: 1px solid #65334D;
   }
 
+  th {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
   /* Dropdown Button */
   .dropbtn {
     background-color: #dbca34;
@@ -59,6 +69,19 @@ body {
   
   /* Change color of dropdown links on hover */
   .dropdown-content a:hover {background-color: #ddd}
+
+  .splitMenuDropDown {
+    display: none;
+    position: absolute;
+    background-color: #7e2b2b;
+    min-width: 160px;
+    min-height: 100px;
+    left: 0px;
+    top: 0px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    color: black;
+  }
   
   /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
   .show {display:block;}

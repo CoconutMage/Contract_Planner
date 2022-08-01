@@ -30,7 +30,7 @@ body {
 .projectOverview {
   position: absolute;
   right: 0px;
-  display: inline;
+  display: grid;
   row-gap: 10px;
   column-gap: 5px;
   padding: 10px;
