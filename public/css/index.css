@@ -31,6 +31,12 @@ body {
   position: absolute;
   right: 0px;
   display: grid;
+  grid-template-areas:
+  'headerDisplay null'
+  'costDisplay null'
+  'priceDisplay null'
+  'paymentsDisplay null'
+  'newPayment newPaymentButton';
   row-gap: 10px;
   column-gap: 5px;
   padding: 10px;

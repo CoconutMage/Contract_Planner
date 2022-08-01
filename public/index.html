@@ -4,10 +4,12 @@
 	</head>
 	<body onload="Start()">
 		<div class="projectOverview">
-			<p class="header">Project Overview</p>
-			<text contenteditable="false">Total Price: $1000</text>
-			<text contenteditable="false">Total Cost: $800</text>
-			<text contenteditable="false">Payments Recieved: $300</text>
+			<p style="grid-area: headerDisplay; padding: 10px;">Project Overview</p>
+			<text contenteditable="false" style="grid-area: costDisplay">Total Cost: $800</text>
+			<text contenteditable="false" style="grid-area: priceDisplay">Total Price: $1000</text>
+			<text contenteditable="false" style="grid-area: paymentsDisplay">Payments Recieved: $300</text>
+			<input type="text" id="addPayment" placeholder="Add Payments" style="grid-area: newPayment"></input>
+				<button onclick="createProject()" style="grid-area: newPaymentButton"></button>
 		</div>
 		<div id="TheBigOne" class="theBigOne">
 			<h class="header">Projects</h>

@@ -113,13 +113,55 @@ function connectWebsocket(server)
 				});
 			}
 
-			if(e.data.includes("AddRowToTable"))
+			if(e.data.includes("AddRowToBudgetWithValue"))
 			{
-				var params = e.data.replace("AddRowToTable", "");
+				var params = e.data.replace("AddRowToBudgetWithValue", "");
+				var queryRequest = 'INSERT INTO ' + params.split(':')[0]
+				console.log(params);
+				queryRequest += `(Row, Item, Quantity, Cost, 'Subcontractor Fee', 'Material Cost', 'Prelim Cost', 'Final Cost', 'Profit Margin', Notes)`;
+				queryRequest += `VALUES (${params.split(':')[2]}, '${params.split(':')[1]}', '0', '0', '${params.split(':')[0] + params.split(':')[2]}SubSplit', '${params.split(':')[0] + params.split(':')[2]}MatSplit', '0', '0', '0', '')`
+				console.log(queryRequest);
+				db.run(queryRequest, function(err)
+				{
+					if (err) 
+					{
+					  return console.log(err.message);
+					}
+					else
+					{
+						console.log("Row Added with Data");
+					}
+				});
+			}
+
+			if(e.data.includes("AddRowToSplit"))
+			{
+				var params = e.data.replace("AddRowToSplit", "");
+				var queryRequest = `INSERT INTO '${params}'`;
+				queryRequest += `(Name, Cost, Notes, Paid)`;
+				queryRequest += 'VALUES (\'\', \'0\', \'\', \'0\')';
+
+				console.log(queryRequest);
+				db.run(queryRequest, function(err)
+				{
+					if (err) 
+					{
+					  return console.log(err.message);
+					}
+					else
+					{
+						console.log("Row Added with Data");
+					}
+				});
+			}
+
+			if(e.data.includes("AddRowToTableBudget"))
+			{
+				var params = e.data.replace("AddRowToTableBudget", "");
 				console.log(e.data + " JHBJD");
 				var queryRequest = 'INSERT INTO ' + params.split(':')[0]
 				queryRequest += `(Row, Item, Quantity, Cost, 'Subcontractor Fee', 'Material Cost', 'Prelim Cost', 'Final Cost', 'Profit Margin', Notes)`;
-				queryRequest += 'VALUES (' + params.split(':')[1] + ', \'Item Name\', \'0\', \'0\', \'' + params.split(':')[1] + 'SubSplit\', \'' + params.split(':')[1] + 'MatSplit\', \'0\', \'0\', \'0\', \'\')'
+				queryRequest += `VALUES (${params.split(':')[1]}, 'Item Name', '0', '0', '${params.split(':')[0] + params.split(':')[1]}SubSplit', '${params.split(':')[0] + params.split(':')[1]}MatSplit', '0', '0', '0', '')`
 				//db.run(`INSERT INTO BudgetEstimate DEFAULT VALUES`, function(err) 
 				db.run(queryRequest, function(err) 
 				{
@@ -131,7 +173,7 @@ function connectWebsocket(server)
 					{
 						console.log("Row Added");
 
-						var splitTableName = params.split(':')[1] + 'SubSplit';
+						var splitTableName = params.split(':')[0] + params.split(':')[1] + 'SubSplit';
 
 						sql = `CREATE TABLE IF NOT EXISTS '${splitTableName}'
 						(
@@ -149,6 +191,7 @@ function connectWebsocket(server)
 							}
 							else
 							{
+								console.log(splitTableName);
 								var queryRequest = `INSERT INTO '${splitTableName}'`;
 								queryRequest += `(Name, Cost, Notes, Paid)`;
 								queryRequest += 'VALUES (\'\', \'0\', \'\', \'0\')'
@@ -157,7 +200,7 @@ function connectWebsocket(server)
 								{
 									if (err) 
 									{
-									return console.log(err.message);
+										return console.log(err.message);
 									}
 									else
 									{
@@ -167,7 +210,7 @@ function connectWebsocket(server)
 							}
 						});
 
-						var matTableName = params.split(':')[1] + 'MatSplit';
+						var matTableName = params.split(':')[0] + params.split(':')[1] + 'MatSplit';
 
 						sql = `CREATE TABLE IF NOT EXISTS '${matTableName}'
 						(
@@ -185,6 +228,7 @@ function connectWebsocket(server)
 							}
 							else
 							{
+								console.log(matTableName);
 								var queryRequest = `INSERT INTO '${matTableName}'`;
 								queryRequest += `(Name, Cost, Notes, Paid)`;
 								queryRequest += 'VALUES (\'\', \'0\', \'\', \'0\')'
@@ -475,6 +519,7 @@ function connectWebsocket(server)
 					else
 					{
 						console.log(tableName);
+						//client.send("DroppedTable" + tableName);
 					}
 				});
 			}

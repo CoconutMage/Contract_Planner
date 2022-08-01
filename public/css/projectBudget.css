@@ -13,6 +13,13 @@ body {
     background: #487878; 
   }
   
+  .addSubButton {
+    width: 20px;
+    height: 20px;
+    z-index: 2;
+    background: #487878; 
+  }
+
   .tableCellDropdown {
     width: 20px;
     height: 18px;
@@ -21,6 +28,7 @@ body {
 
   table, th, td {
     border: 1px solid #65334D;
+    text-align: center;
   }
 
   th {

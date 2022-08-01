@@ -2,6 +2,7 @@ let tableData = [];
 let splitData = [];
 var saveImminent = false;
 var tableName = NumberToString(sessionStorage.getItem("tableName").replaceAll(" ", "")) + "Budget";
+var splitTableName = "";
 const checkBoxVal = new Array(41);
 
 function Start()
@@ -52,6 +53,7 @@ function websocket()
 
 			console.log(data);
 			splitData = JSON.parse(data);
+			console.log(splitData);
 			splitTableGen();
 		}
 	};
@@ -75,6 +77,12 @@ function websocket()
 		ws.send("RemoveRow: " + rowid);
 	}
 	websocket.removeRow = removeRow;
+
+	function dropTable(tableName)
+	{
+		ws.send("DropTable " + tableName);
+	}
+	websocket.dropTable = dropTable;
 
 	//ERROR HANDLING AND DEBUGGING
 	ws.onerror = function (event)
@@ -101,17 +109,24 @@ function websocket()
 
 	function addRowToTable(tableName, rowNumber) 
 	{
-		var wsMessage = "AddRowToTable" + tableName + ":" + rowNumber;
+		var wsMessage = "AddRowToTableBudget" + tableName + ":" + rowNumber;
 		ws.send(wsMessage);
 	}
 	websocket.addRowToTable = addRowToTable;
 
 	function addRowToTableWithValue(tableName, itemName, rowNumber)
 	{
-		var wsMessage = "AddRowToTableWithValue" + tableName + ":" + itemName + ":" + rowNumber;
+		var wsMessage = "AddRowToBudgetWithValue" + tableName + ":" + itemName + ":" + rowNumber;
 		ws.send(wsMessage);
 	}
 	websocket.addRowToTableWithValue = addRowToTableWithValue;
+
+	function addRowToSplit(tableName)
+	{
+		var wsMessage = "AddRowToSplit" + tableName;
+		ws.send(wsMessage);
+	}
+	websocket.addRowToSplit = addRowToSplit;
 
 	function sendMessageWithData(data)
 	{
@@ -231,11 +246,13 @@ let splitDataHtml = '';
 
 function splitTableGen()
 {
+	splitDataTableHead = '<tr>';
+	splitDataHtml = '';
 	if (splitData.length == 0)
 	{
 		splitDataTableHead += 
 			`<th>
-				<img src="images/addIcon.png" class="anyButton" onclick="addLineItem(null, true)"></button>
+				<img src="../images/addIcon.png" class="addSubButton" onclick="addLineItemForSplit(null, true)"></button>
 			</th>`;
 		splitTableHead.innerHTML = splitDataTableHead;
 		return;
@@ -249,14 +266,15 @@ function splitTableGen()
 	}
 	splitDataTableHead += 
 		`<th>
-			<img src="images/addIcon.png" class="anyButton" onclick="addLineItem(null, true)"></button>
+			<img src="../images/addIcon.png" class="addSubButton" onclick="addLineItemForSplit(null, true)"></button>
 		</th>`;
 	splitTableHead.innerHTML = splitDataTableHead;
 
 	var i = 0;
-	for (data of splitData)
+	for (sData of splitData)
 	{
-		if (i != 0) addLineItemForSplit(data, false);
+		console.log(sData);
+		if (i != 0) addLineItemForSplit(sData, false);
 		i++;
 		/*
 		dataHtml += `<tr id = "tableRow_${rowNumber}">`;
@@ -280,12 +298,22 @@ function removeLineItem(element)
 {
 	elementToRemove = element.parentNode.parentNode;
 
-	console.log(element.parentNode.parentNode.id.replace("tableRow_", ""));
-	//console.log(elementToRemove);
-	websocket.removeRowFromTable(elementToRemove.id.replace("tableRow_", ""), tableName);
+	var rowIdToRemove = element.parentNode.parentNode.id.replace("tableRow_", "");
+	removeSupportingTables(rowIdToRemove);
 	elementToRemove.remove();
 }
 
+function removeSupportingTables(rowIdToRemove)
+{
+	var i = 0;
+
+		console.log(tableData[rowIdToRemove]["Material Cost"]);
+		console.log(tableData[rowIdToRemove]["Subcontractor Fee"]);
+		websocket.dropTable(tableData[rowIdToRemove]["Material Cost"]);
+		websocket.dropTable(tableData[rowIdToRemove]["Subcontractor Fee"]);
+
+	websocket.removeRowFromTable(rowIdToRemove, tableName);
+}
 
 function addLineItem(data, isNew, itemName = "Item Name")
 {
@@ -296,7 +324,20 @@ function addLineItem(data, isNew, itemName = "Item Name")
 		var cellID = tableKeys[i] + "_" + i;
 		if (data == null)
 		{
+			console.log(tableName);
 			if (i == 0) keyName = rowNumber;
+			else if (i == 4)
+			{
+				keyName = (tableName + rowNumber + "SubSplit");
+				if (tableData[rowNumber]) tableData[rowNumber]["Subcontractor Fee"] = keyName;
+				else tableData[rowNumber] = {"Subcontractor Fee": keyName};
+			}
+			else if (i ==5)
+			{
+				keyName = (tableName + rowNumber + "MatSplit");
+				if (tableData[rowNumber]) tableData[rowNumber]["Material Cost"] = keyName;
+				else tableData[rowNumber] = {"Material Cost": keyName};
+			}
 			else if(i != 1 && i != tableKeys.length - 1) keyName = 0;
 			else if (i == 1) keyName = itemName;
 			else if (i == tableKeys.length - 1) keyName = "";
@@ -310,14 +351,13 @@ function addLineItem(data, isNew, itemName = "Item Name")
 		if (i == 0) dataHtml += `<td id = "td" draggable="true" ondragstart="rowDragStart(event)" ondragover="allowDrop(event)" ondrop="rowDrop(event)" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`;
 		else if (i == 4 || i ==5)
 		{
-			dataHtml += `<td id = "td" contenteditable="false" style="text-align:center" oninput="tableSaveTimer()">  ${keyName}`;
+			dataHtml += `<td id = "td" contenteditable="false" style="text-align:center" oninput="tableSaveTimer()">`;
 			dataHtml += `  <button type="button" class="tableCellDropdown" onclick="displaySplit('${keyName}')"></button></td>`;
 		}
 		else dataHtml += `<td id = "td" contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`;
 	}
 	dataHtml += `<td><button type="button" class="anyButton" onclick="removeLineItem(this)">Remove line item</button> <button type="button" class="anyButton" onclick="removeLineItem(this)">Change</button></td></tr>`;
 	tableBody.innerHTML = dataHtml;
-	console.log(itemName);
 	if(isNew)
 	{
 		if (itemName == "Item Name") websocket.addRowToTable(tableName, rowNumber);
@@ -328,6 +368,7 @@ function addLineItem(data, isNew, itemName = "Item Name")
 
 function addLineItemForSplit(data, isNew, itemName = "Item Name")
 {
+	console.log("Adding Line Item Split");
 	let tableKeys = Object.keys(splitData[0]);
 	splitDataHtml += `<tr id = "tableRow_${rowNumber}">`;
 	for (i = 0; i < tableKeys.length; i++) 
@@ -335,10 +376,10 @@ function addLineItemForSplit(data, isNew, itemName = "Item Name")
 		var cellID = tableKeys[i] + "_" + i;
 		if (data == null)
 		{
-			if (i == 0) keyName = rowNumber;
-			else if(i != 1 && i != tableKeys.length - 1) keyName = 0;
-			else if (i == 1) keyName = itemName;
-			else if (i == tableKeys.length - 1) keyName = "";
+			//else if(i != 1 && i != tableKeys.length - 1) keyName = 0;
+			if (i == 1 || i == 3) keyName = "0";
+			else keyName = "";
+			//else if (i == tableKeys.length - 1) keyName = "";
 		}
 		else
 		{
@@ -346,29 +387,38 @@ function addLineItemForSplit(data, isNew, itemName = "Item Name")
 		}
 
 		//if (i != 0) dataHtml += `<td id = ${cellID} contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`
-		if (i == 0) splitDataHtml += `<td id = "td" draggable="true" ondragstart="rowDragStart(event)" ondragover="allowDrop(event)" ondrop="rowDrop(event)" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`;
-		else if (i == 4 || i ==5)
+		if (i != 3) splitDataHtml += `<td id = "td" contenteditable="true" style="text-align:center" oninput="splitTableSaveTimer()">${keyName}</td>`;
+		else
+		{
+			//splitDataHtml += `<td input="checkbox" id="split${rowNumber}Paid" name="split${rowNumber}Paid" value="" onchange="">`
+			splitDataHtml += `<td><input type="checkbox" id="split${rowNumber}Paid" name="split${rowNumber}Paid" value="" onchange="splitTableSaveTimer()"></td>`
+		}
+		/*else if (i == 4 || i ==5)
 		{
 			splitDataHtml += `<td id = "td" contenteditable="false" style="text-align:center" oninput="tableSaveTimer()">  ${keyName}`;
 			splitDataHtml += `  <button type="button" class="tableCellDropdown" onclick="displaySplit(${keyName})"></button></td>`;
 		}
-		else splitDataHtml += `<td id = "td" contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`;
+		else splitDataHtml += `<td id = "td" contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`;*/
 	}
-	splitDataHtml += `<td><button type="button" class="anyButton" onclick="removeLineItem(this)">Remove line item</button> <button type="button" class="anyButton" onclick="removeLineItem(this)">Change</button></td></tr>`;
+	//splitDataHtml += `<td><button type="button" class="anyButton" onclick="removeLineItem(this)">Remove line item</button> <button type="button" class="anyButton" onclick="removeLineItem(this)">Change</button></td></tr>`;
 	splitTableBody.innerHTML = splitDataHtml;
-	console.log(itemName);
 	if(isNew)
 	{
-		if (itemName == "Item Name") websocket.addRowToTable(tableName, rowNumber);
-		else websocket.addRowToTableWithValue(tableName, itemName, rowNumber);
+		websocket.addRowToSplit(splitTableName);
 	}
-	rowNumber += 1;
 }
 
 function tableSaveTimer()
 {
-    var secondsBetweenAutosave = 3
+    var secondsBetweenAutosave = 1
     if (!saveImminent) setTimeout(function() {saveTable();}, secondsBetweenAutosave * 1000);
+    saveImminent = true;
+}
+
+function splitTableSaveTimer()
+{
+    var secondsBetweenAutosave = 1
+    if (!saveImminent) setTimeout(function() {saveSplitTable();}, secondsBetweenAutosave * 1000);
     saveImminent = true;
 }
 
@@ -403,6 +453,13 @@ function saveTable()
 	websocket.sendTable(JSON.stringify(arr));
 }
 
+function saveSplitTable()
+{
+    console.log("saving split table");
+    saveImminent = false;
+	
+}
+
 /* When the user clicks on the button,
 toggle between hiding and showing the dropdown content */
 function myFunction()
@@ -412,15 +469,18 @@ function myFunction()
 
 function displaySplit(data)
 {
-	splitDataTableHead = '<tr>';
-	splitDataHtml = '';
+	/*splitDataTableHead = '<tr>';
+	splitDataHtml = '';*/
+	splitTableBody.innerHTML = "";
 	var left = 0;
-	var top = 105 + (30 * parseInt(data.replace("SubSplit", "").replace("Mat", "")));
+	console.log(data);
+	var top = 105 + (30 * parseInt(data.replace("SubSplit", "").replace("Mat", "").replace(`${tableName}`, "")));
 	if (data.includes("Mat")) left = 385;
 	else left = 230;
 	document.getElementById("splitMenu").classList.toggle("show");
 	document.getElementById("splitMenu").style.setProperty("left", `${left}px`);
 	document.getElementById("splitMenu").style.setProperty("top", `${top}px`);
+	splitTableName = data;
 	websocket.sendMessageWithData('RequestTable' + data + ":SubSplit");
 }
   
@@ -438,6 +498,20 @@ window.onclick = function(event)
 			if (openDropdown.classList.contains('show'))
 			{
 				openDropdown.classList.remove('show');
+			}
+		}
+	}
+	if (!document.getElementById('splitMenu').contains(event.target) && !event.target.matches('.tableCellDropdown'))
+	{
+		var dropdowns = document.getElementsByClassName("splitMenuDropDown");
+		var i;
+		for (i = 0; i < dropdowns.length; i++)
+		{
+			var openDropdown = dropdowns[i];
+			if (openDropdown.classList.contains('show'))
+			{
+				openDropdown.classList.remove('show');
+				splitTableBody.innerHTML = "";
 			}
 		}
 	}
@@ -484,7 +558,7 @@ function BulkAddRows()
 		if(checkBoxVal[j])
 		{
 			console.log(("bulkAddLineItem" + (j + 1)));
-			addLineItem(null, false, document.getElementById(("bulkAddLineItem" + (j + 1))).nextElementSibling.innerHTML);
+			addLineItem(null, true, (document.getElementById(("bulkAddLineItem" + (j + 1))).nextElementSibling.innerHTML).replace(" ", ""));
 			document.getElementById(("bulkAddLineItem" + (j + 1))).checked = false;
 		}
 		checkBoxVal[j] = false;

@@ -1,4 +1,5 @@
 let tableData = [];
+let removalTableData = [];
 let projectNameToRowID = {};
 var numProjects = 0;
 
@@ -17,17 +18,30 @@ function websocket()
 	ws.onopen = function (event)
 	{
 		//ws.send('Bazinga');
-		ws.send('RequestTableProjectList');
+		ws.send('RequestTableProjectList' + ':ProhectListing');
 	};
 
 	ws.onmessage = function (event)
 	{
-		data = [];
-		data = event.data.split('-:-')[0];
+		console.log(event.data);
+		if (event.data.split('-:-')[1] == "Budget")
+		{
+			data = [];
+			data = event.data.split('-:-')[0];
 
-		tableData = JSON.parse(data);
-		//console.log("Loading page: " + document.URL);
-		generateTable();
+			console.log(data);
+			removalTableData = JSON.parse(data);
+			removeSupportingTables(removalTableData);
+		}
+		else
+		{
+			data = [];
+			data = event.data.split('-:-')[0];
+
+			tableData = JSON.parse(data);
+			//console.log("Loading page: " + document.URL);
+			generateTable();
+		}
 	};
 
 	//CUSTOM FUNCTIONS
@@ -101,6 +115,12 @@ function websocket()
 	}
 	websocket.updateProjectStatus = updateProjectStatus;
 
+	function sendMessageWithData(data)
+	{
+		ws.send(data);
+	}
+	websocket.sendMessageWithData = sendMessageWithData;
+
 	//////////////////////////////////////////////////////////
 }
 
@@ -137,13 +157,27 @@ function createProject()
 	document.getElementById("ActiveList").innerHTML += getHtmlForProjectList(numProjects, projectName);
 	numProjects += 1;
 }
+var tableNameToRemove = '';
 function removeTable(element, data)
 {
 	//websocket.removeRowData((document.getElementById('newProjectText').value.replaceAll(" ", "")));
 	websocket.removeRowFromTable(projectNameToRowID[data], 'ProjectList');
-	websocket.dropTable((data + "Budget"));
+	websocket.sendMessageWithData('RequestTable' + (data + "Budget:Budget"));
+	tableNameToRemove = data;
+
 	document.getElementById(element).remove();
 	numProjects -= 1;
+}
+
+function removeSupportingTables(removalTableData)
+{
+	websocket.dropTable((tableNameToRemove + "Budget"));
+	var i = 0;
+	for (rmData of removalTableData)
+	{
+		websocket.dropTable(rmData["Material Cost"]);
+		websocket.dropTable(rmData["Subcontractor Fee"]);
+	}
 }
 
 let isTableGenerated = false;
