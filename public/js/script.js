@@ -163,7 +163,7 @@ function createProject()
 	var processedProjectName = NumberToString(projectName).replaceAll(" ", "");
 
 	if (processedProjectName in projectNameToRowID || processedProjectName == "") return;
-	projectNameToRowID[processedProjectName] = (i + 1);
+	projectNameToRowID[processedProjectName] = (numProjects + 1);
 	console.log("Project Name In: " + projectName.replaceAll(" ", "") + "Budget");
 	
 	websocket.addTable(projectName.replaceAll(" ", "") + "Budget");
