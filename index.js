@@ -81,7 +81,7 @@ function connectWebsocket(server)
 			{
 				console.log("Requesting: " + e.data.replace("RequestTable", "").split(':')[0]);
 				var tableRequest = `SELECT * FROM '${e.data.replace("RequestTable", "").split(':')[0]}'`;
-				db.serialize(() => 
+				db.parallelize(() => 
 				{
 					/*db.all('SELECT * FROM BudgetEstimate', //[param1, param2],// (err, result) => */
 					//db.all('SELECT * FROM ?', [tableRequested], /*[param1, param2],*/ (err, result) =>
