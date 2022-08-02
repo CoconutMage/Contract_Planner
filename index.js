@@ -9,7 +9,7 @@ var queryInProgress = false;
 
 //Database Variables
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('database.db');
+var db = new sqlite3.Database('database.db');
 
 //sendFile will go here
 //include subdir
@@ -30,6 +30,7 @@ function connectWebsocket(server)
 	//On successful websocket connection, log that the connection was successful
 	wss.on('connection', (ws) => 
 	{
+		db = new sqlite3.Database('database.db');
 		console.log("Websocket Connection Successful");
 		//sendTableData();
 		
