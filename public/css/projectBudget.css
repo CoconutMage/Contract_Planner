@@ -90,6 +90,24 @@ body {
     z-index: 1;
     color: black;
   }
+
+  .changeOrderMenuDropDown {
+    display: none;
+    position: absolute;
+    background-color: #7e2b2b;
+    min-width: 160px;
+    min-height: 100px;
+    left: 0px;
+    top: 0px;
+    width: 650px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    color: black;
+  }
+
+  .changeOrderButton {
+    background: #487878; 
+  }
   
   /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
   .show {display:block;}

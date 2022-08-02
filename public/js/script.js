@@ -147,7 +147,7 @@ function createProject()
 	var projectName = document.getElementById('newProjectText').value;
 	var processedProjectName = NumberToString(projectName).replaceAll(" ", "");
 
-	if (processedProjectName in projectNameToRowID) return;
+	if (processedProjectName in projectNameToRowID || processedProjectName == "") return;
 	projectNameToRowID[processedProjectName] = (i + 1);
 	console.log("Project Name In: " + projectName.replaceAll(" ", "") + "Budget");
 	

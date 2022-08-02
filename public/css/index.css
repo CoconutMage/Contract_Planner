@@ -29,7 +29,7 @@ body {
 
 .projectOverview {
   position: absolute;
-  right: 0px;
+  right: 50px;
   display: grid;
   grid-template-areas:
   'headerDisplay null'

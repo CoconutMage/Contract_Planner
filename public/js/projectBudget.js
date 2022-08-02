@@ -1,9 +1,11 @@
 let tableData = [];
 let splitData = [];
+let changeOrders = [];
 var saveImminent = false;
 var tableName = NumberToString(sessionStorage.getItem("tableName").replaceAll(" ", "")) + "Budget";
 var splitTableName = "";
 const checkBoxVal = new Array(41);
+var numChangeOrders = 0;
 
 function Start()
 {
@@ -199,7 +201,7 @@ function tableGenTest()
 		return;
 	}
 	let tableKeys = Object.keys(tableData[0]);
-	for (i = 0; i < tableKeys.length; i++) 
+	for (i = 0; i < tableKeys.length - 2; i++) 
 	{
 		dataTableHead += 
 		`<th id = "tableKey">${tableKeys[i]}</th>`
@@ -218,7 +220,12 @@ function tableGenTest()
 	var i = 0;
 	for (data of tableData)
 	{
-		if (i != 0) addLineItem(data, false);
+		if (i != 0 && !data["isChangeOrder"]) addLineItem(data, false);
+		else if (data["isChangeOrder"])
+		{
+			changeOrders[numChangeOrders] = data;
+			numChangeOrders += 1;
+		}
 		i++;
 		/*
 		dataHtml += `<tr id = "tableRow_${rowNumber}">`;
@@ -236,6 +243,8 @@ function tableGenTest()
 		dataHtml += `<td><button type="button" class="anyButton" onclick="removeLineItem(this)">Remove line item</button> <button type="button" class="anyButton" onclick="removeLineItem(this)">Change</button></td></tr>`;
 		rowNumber += 1;*/
 	}
+	console.log(changeOrders[0]);
+	console.log(changeOrders[1]);
 	//tableBody.innerHTML = dataHtml;
 }
 
@@ -319,7 +328,7 @@ function addLineItem(data, isNew, itemName = "Item Name")
 {
 	let tableKeys = Object.keys(tableData[0]);
 	dataHtml += `<tr id = "tableRow_${rowNumber}">`;
-	for (i = 0; i < tableKeys.length; i++) 
+	for (i = 0; i < tableKeys.length - 2; i++) 
 	{
 		var cellID = tableKeys[i] + "_" + i;
 		if (data == null)
@@ -338,9 +347,9 @@ function addLineItem(data, isNew, itemName = "Item Name")
 				if (tableData[rowNumber]) tableData[rowNumber]["Material Cost"] = keyName;
 				else tableData[rowNumber] = {"Material Cost": keyName};
 			}
-			else if(i != 1 && i != tableKeys.length - 1) keyName = 0;
+			else if(i != 1 && i != tableKeys.length - 3) keyName = 0;
 			else if (i == 1) keyName = itemName;
-			else if (i == tableKeys.length - 1) keyName = "";
+			else if (i == tableKeys.length - 3) keyName = "";
 		}
 		else
 		{
@@ -356,7 +365,8 @@ function addLineItem(data, isNew, itemName = "Item Name")
 		}
 		else dataHtml += `<td id = "td" contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`;
 	}
-	dataHtml += `<td><button type="button" class="anyButton" onclick="removeLineItem(this)">Remove line item</button> <button type="button" class="anyButton" onclick="removeLineItem(this)">Change</button></td></tr>`;
+	if (data != null && data["ChangeID"]) dataHtml += `<td><button type="button" class="anyButton" onclick="removeLineItem(this)">Remove line item</button> <button type="button" class="changeOrderButton" onclick="ViewChangeOrders('${rowNumber}', '${data["ChangeID"]}')">Change Order</button></td></tr>`;
+	else dataHtml += `<td><button type="button" class="anyButton" onclick="removeLineItem(this)">Remove line item</button> <button type="button" class="changeOrderButton" onclick="ViewChangeOrders('${rowNumber}', '${numChangeOrders}')">Change Order</button></td></tr>`;
 	tableBody.innerHTML = dataHtml;
 	if(isNew)
 	{
@@ -420,6 +430,67 @@ function splitTableSaveTimer()
     var secondsBetweenAutosave = 1
     if (!saveImminent) setTimeout(function() {saveSplitTable();}, secondsBetweenAutosave * 1000);
     saveImminent = true;
+}
+
+const changeOrderTableHead = document.getElementById('changeOrderTableHead');
+const changeOrderTableBody = document.getElementById('changeOrderTableData');
+let changeOrderDataTableHead = '<tr>';
+let changeOrderDataHtml = '';
+function ViewChangeOrders(data, changeId)
+{
+	changeOrderTableBody.innerHTML = "";
+	GenChangeOrderTable();
+	var left = 75;
+	var top = 105 + (30 * parseInt(data.replace("SubSplit", "").replace("Mat", "").replace(`${tableName}`, "")));
+	document.getElementById("changeOrderMenu").classList.toggle("show");
+	document.getElementById("changeOrderMenu").style.setProperty("left", `${left}px`);
+	document.getElementById("changeOrderMenu").style.setProperty("top", `${top}px`);
+
+	for (i in changeOrders)
+	{
+		console.log("View Change Order: " + changeOrders[i]);
+		if (changeOrders[i]["ChangeID"] == changeId) addChangeOrderLine(changeOrders[i]);
+	}
+
+	//splitTableName = data;
+	//websocket.sendMessageWithData('RequestTable' + data + ":SubSplit");
+}
+
+function GenChangeOrderTable()
+{
+	changeOrderDataTableHead = '<tr>';
+	changeOrderDataHtml = '';
+
+	let tableKeys = Object.keys(tableData[0]);
+	for (i = 2; i < tableKeys.length - 2; i++) 
+	{
+		changeOrderDataTableHead += 
+		`<th id = "tableKey">${tableKeys[i]}</th>`
+	}
+	changeOrderDataTableHead += 
+		`<th> <img src="../images/addIcon.png" class="addSubButton" onclick="console.log('Happ');"></button> </th>`;
+		changeOrderTableHead.innerHTML = changeOrderDataTableHead;
+}
+
+function addChangeOrderLine(data)
+{
+	let tableKeys = Object.keys(tableData[0]);
+	changeOrderDataHtml += `<tr id = "tableRow_${rowNumber}">`;
+	for (i = 2; i < tableKeys.length - 2; i++) 
+	{
+		
+		keyName = data[tableKeys[i]];
+
+		//if (i != 0) dataHtml += `<td id = ${cellID} contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`
+		if (i == 0) changeOrderDataHtml += `<td id = "td" draggable="true" ondragstart="rowDragStart(event)" ondragover="allowDrop(event)" ondrop="rowDrop(event)" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`;
+		else if (i == 4 || i ==5)
+		{
+			changeOrderDataHtml += `<td id = "td" contenteditable="false" style="text-align:center" oninput="tableSaveTimer()">`;
+			changeOrderDataHtml += `  <button type="button" class="tableCellDropdown" onclick="displaySplit('${keyName}')"></button></td>`;
+		}
+		else changeOrderDataHtml += `<td id = "td" contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`;
+	}
+	changeOrderTableBody.innerHTML = changeOrderDataHtml;
 }
 
 function saveTable()
@@ -504,6 +575,20 @@ window.onclick = function(event)
 	if (!document.getElementById('splitMenu').contains(event.target) && !event.target.matches('.tableCellDropdown'))
 	{
 		var dropdowns = document.getElementsByClassName("splitMenuDropDown");
+		var i;
+		for (i = 0; i < dropdowns.length; i++)
+		{
+			var openDropdown = dropdowns[i];
+			if (openDropdown.classList.contains('show'))
+			{
+				openDropdown.classList.remove('show');
+				splitTableBody.innerHTML = "";
+			}
+		}
+	}
+	if (!document.getElementById('changeOrderMenu').contains(event.target) && !event.target.matches('.changeOrderButton'))
+	{
+		var dropdowns = document.getElementsByClassName("changeOrderMenuDropDown");
 		var i;
 		for (i = 0; i < dropdowns.length; i++)
 		{

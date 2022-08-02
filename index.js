@@ -139,7 +139,7 @@ function connectWebsocket(server)
 				var params = e.data.replace("AddRowToSplit", "");
 				var queryRequest = `INSERT INTO '${params}'`;
 				queryRequest += `(Name, Cost, Notes, Paid)`;
-				queryRequest += 'VALUES (\'\', \'0\', \'\', \'0\')';
+				queryRequest += ' VALUES (\'\', \'0\', \'\', \'0\')';
 
 				console.log(queryRequest);
 				db.run(queryRequest, function(err)
@@ -217,7 +217,7 @@ function connectWebsocket(server)
 							"Name"	TEXT NOT NULL DEFAULT 'Item Name',
 							"Cost"	REAL NOT NULL DEFAULT 0.0,
 							"Notes"	TEXT NOT NULL DEFAULT '',
-							"Paid" BOOLEAN NOT NULL DEFAULT 'FALSE'
+							"Paid" BOOLEAN NOT NULL DEFAULT '0'
 						)`;
 						
 						db.run(sql, function(err) 
@@ -473,7 +473,10 @@ function connectWebsocket(server)
 					"Prelim Cost"	REAL NOT NULL DEFAULT 0.0,
 					"Final Cost"	REAL NOT NULL DEFAULT 0.0,
 					"Profit Margin"	REAL NOT NULL DEFAULT 0.0,
-					"Notes"	TEXT NOT NULL DEFAULT ''
+					"Notes"	TEXT NOT NULL DEFAULT '',
+					"ChangeID"	INTEGER NOT NULL DEFAULT 0,
+					"isChangeOrder" BOOLEAN NOT NULL DEFAULT '0'
+
 				)`;
 				
 				db.run(sql, function(err) 
