@@ -7,7 +7,6 @@ var currentProjectDisplayed = "";
 
 function Start()
 {
-
 	websocket();
 }
 

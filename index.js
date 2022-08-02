@@ -582,7 +582,7 @@ function connectWebsocket(server)
 		ws.on('close', function (event)
 		{
 			console.log('Client disconnected');
-			//db.close();
+			db.close();
 		});
 
 		//If the websocket throws an error, log the error
@@ -590,6 +590,10 @@ function connectWebsocket(server)
 		{
 			console.log(event)
 		});
+	});
+	wss.on('close', (ws) => 
+	{
+		db.close();
 	});
 }
 
