@@ -558,6 +558,7 @@ function connectWebsocket(server)
 
 			if(e.data.includes("DropTable"))
 			{
+				console.log(e.data + " 561");
 				tableName = e.data.replace("DropTable ", "");
 
 				sql = `DROP TABLE IF EXISTS ${tableName}`;
