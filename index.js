@@ -69,7 +69,12 @@ function connectWebsocket(server)
 			////////////////////////////////////////////////////////////////////////////////////////
 			//Added till Will finishes table serving
 
-			while(queryInProgress) console.log("Query Waiting");
+			var i = 0;
+			while(queryInProgress && i < 1000)
+			{
+				i++;
+				console.log("Query Waiting");
+			}
 			queryInProgress = true;
 
 			if (e.data.includes("RequestTable"))
