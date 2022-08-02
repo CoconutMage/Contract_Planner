@@ -5,6 +5,7 @@ const port = process.env.PORT || 8080;
 var http = require('http');
 const { table, Console } = require('console');
 const { query } = require('express');
+var queryInProgress = false;
 
 //Database Variables
 const sqlite3 = require('sqlite3').verbose();
@@ -34,6 +35,7 @@ function connectWebsocket(server)
 		
 		function sendTableData()
 		{
+			queryInProgress = true;
 			db.serialize(() => 
 			{
 				/*db.all('SELECT * FROM BudgetEstimate', //[param1, param2],// (err, result) => */
@@ -42,6 +44,7 @@ function connectWebsocket(server)
 					if (err) 
 					{
 						console.log(err);
+						queryInProgress = false;
 					} 
 					else 
 					{
@@ -53,6 +56,7 @@ function connectWebsocket(server)
 						{
 							client.send(JSON.stringify(tableData));
 						});
+						queryInProgress = false;
 					}
 				});
 			});
@@ -64,6 +68,9 @@ function connectWebsocket(server)
 		{
 			////////////////////////////////////////////////////////////////////////////////////////
 			//Added till Will finishes table serving
+
+			while(queryInProgress) console.log("Query Waiting");
+			queryInProgress = true;
 
 			if (e.data.includes("RequestTable"))
 			{
@@ -79,6 +86,7 @@ function connectWebsocket(server)
 						if (err) 
 						{
 							console.log(err);
+							queryInProgress = false;
 						} 
 						else 
 						{
@@ -89,6 +97,7 @@ function connectWebsocket(server)
 							wss.clients.forEach((client) => 
 							{
 								client.send(JSON.stringify(tableData) + '-:-' + e.data.replace("RequestTable", "").split(':')[1]);
+								queryInProgress = false;
 							});
 						}
 					});
@@ -104,10 +113,12 @@ function connectWebsocket(server)
 				{
 					if (err) 
 					{
+						queryInProgress = false;
 					  return console.log(err.message);
 					}
 					else
 					{
+						queryInProgress = false;
 						console.log("Row Added with Data");
 					}
 				});
@@ -125,10 +136,12 @@ function connectWebsocket(server)
 				{
 					if (err) 
 					{
+						queryInProgress = false;
 					  return console.log(err.message);
 					}
 					else
 					{
+						queryInProgress = false;
 						console.log("Row Added with Data");
 					}
 				});
@@ -146,10 +159,12 @@ function connectWebsocket(server)
 				{
 					if (err) 
 					{
+						queryInProgress = false;
 					  return console.log(err.message);
 					}
 					else
 					{
+						queryInProgress = false;
 						console.log("Row Added with Data");
 					}
 				});
@@ -167,6 +182,7 @@ function connectWebsocket(server)
 				{
 					if (err) 
 					{
+						queryInProgress = false;
 					  return console.log(err.message);
 					}
 					else
@@ -187,6 +203,7 @@ function connectWebsocket(server)
 						{
 							if (err) 
 							{
+								queryInProgress = false;
 								return console.log(err.message);
 							}
 							else
@@ -200,10 +217,12 @@ function connectWebsocket(server)
 								{
 									if (err) 
 									{
+										queryInProgress = false;
 										return console.log(err.message);
 									}
 									else
 									{
+										queryInProgress = false;
 										console.log("Row Added");
 									}
 								});
@@ -224,6 +243,7 @@ function connectWebsocket(server)
 						{
 							if (err) 
 							{
+								queryInProgress = false;
 								return console.log(err.message);
 							}
 							else
@@ -237,10 +257,12 @@ function connectWebsocket(server)
 								{
 									if (err) 
 									{
+										queryInProgress = false;
 									return console.log(err.message);
 									}
 									else
 									{
+										queryInProgress = false;
 										console.log("Row Added");
 									}
 								});
@@ -263,10 +285,12 @@ function connectWebsocket(server)
 				{
 					if (err) 
 					{
+						queryInProgress = false;
 						return console.log(err.message);
 					}
 					else
 					{
+						queryInProgress = false;
 						console.log(rowid);
 					}
 				});
@@ -283,6 +307,7 @@ function connectWebsocket(server)
 				{
 					if (err) 
 					{
+						queryInProgress = false;
 						return console.log(err.message);
 					}
 				});
@@ -299,6 +324,7 @@ function connectWebsocket(server)
 				{
 					if (err) 
 					{
+						queryInProgress = false;
 						return console.log(err.message);
 					}
 				});
@@ -441,6 +467,7 @@ function connectWebsocket(server)
 						}
 					}
 				});
+				queryInProgress = false;
 			}
 
 			if(e.data.includes("Add Row"))
@@ -543,7 +570,7 @@ function connectWebsocket(server)
 					}
 				});
 			}
-			
+			queryInProgress = false;
 		}
 
 		ws.on('close', function (event)
