@@ -593,6 +593,7 @@ function connectWebsocket(server)
 	});
 	wss.on('close', (ws) => 
 	{
+		console.log("Closing Server");
 		db.close();
 	});
 }
