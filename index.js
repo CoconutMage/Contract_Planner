@@ -95,14 +95,14 @@ function connectWebsocket(server)
 						} 
 						else 
 						{
-							//console.log(result);
+							console.log(result);
 							let tableData = [];
 							tableData = result;
-							
+							queryInProgress = false;
+
 							wss.clients.forEach((client) => 
 							{
 								client.send(JSON.stringify(tableData) + '-:-' + e.data.replace("RequestTable", "").split(':')[1]);
-								queryInProgress = false;
 							});
 						}
 					});
