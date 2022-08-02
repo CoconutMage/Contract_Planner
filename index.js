@@ -302,18 +302,19 @@ function connectWebsocket(server)
 				db.serialize(() => 
 				{
 					ri = 0;
+					var numRows = 11;
 					for(i  = 0; i < recData.length - 1; i++)
 					{
-						if(i%9 == 0)
+						if(i%numRows == 0)
 						{
-							ri = (i%9) + 1;
+							ri = (i%numRows) + 1;
 							//console.log(ri);
 						}
 
 						if(recData[i].Row != undefined)
 						{
 							//ri = recData[i].Row;
-							ri = (i%9) + 1;
+							ri = (i%numRows) + 1;
 							//var queryRequest = `UPDATE '${tableName}' SET Item='${recData[i].Item}' WHERE rowid='${ri}'`;
 							var queryRequest = 'UPDATE ' + tableName + ' SET Row=' + ri + ' WHERE Row=' + recData[i].Row;
 							console.log(queryRequest);
