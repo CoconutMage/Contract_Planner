@@ -1,7 +1,9 @@
 let tableData = [];
+let projectPayments = [];
 let removalTableData = [];
 let projectNameToRowID = {};
 var numProjects = 0;
+var currentProjectDisplayed = "";
 
 function Start()
 {
@@ -115,6 +117,13 @@ function websocket()
 	}
 	websocket.updateProjectStatus = updateProjectStatus;
 
+	function updateProjectPayments(projectName, payment) 
+	{
+		var wsMessage = "UpdateProjectPayments:" + projectName + ":" + payment;
+		ws.send(wsMessage);
+	}
+	websocket.updateProjectPayments = updateProjectPayments;
+
 	function sendMessageWithData(data)
 	{
 		ws.send(data);
@@ -140,6 +149,13 @@ function NumberToString(data)
 	convertedData = convertedData.replaceAll('9', 'Nine');
 
 	return convertedData;
+}
+
+function AddPayment()
+{
+	projectPayments[currentProjectDisplayed] += parseInt(document.getElementById('addPayment').value);
+	document.getElementById("paymentsText").innerHTML = "Payments Recieved: $" + projectPayments[currentProjectDisplayed];
+	websocket.updateProjectPayments(currentProjectDisplayed, projectPayments[currentProjectDisplayed]);
 }
 
 function createProject()
@@ -206,7 +222,10 @@ function generateTable()
 			
 			var processedProjectName = NumberToString(tableData[i].ProjectName).replaceAll(" ", "");
 			projectNameToRowID[processedProjectName] = (i + 1);
-			console.log("Project Name In: " + processedProjectName);
+			console.log("Project Name In: " + tableData[i].Payments);
+
+			if (tableData[i].Payments) projectPayments[tableData[i].ProjectName] = tableData[i].Payments;
+			else projectPayments[tableData[i].ProjectName] = 0;
 
 			numProjects += 1;
     	}
@@ -281,6 +300,7 @@ function getHtmlForProjectList(i, projectName)
 	//infoButton.setAttribute("onclick", functionCall);
 	infoButton.setAttribute("class", "projectInfoButton");
 	infoButton.setAttribute("src", "images/infoIcon.png")
+	infoButton.setAttribute("onclick", `currentProjectDisplayed=${projectName}`);
 	//buttonTwo.innerHTML = "Delete Project";
 
 	var button = document.createElement('button');

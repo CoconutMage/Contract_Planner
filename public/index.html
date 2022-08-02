@@ -5,11 +5,11 @@
 	<body onload="Start()">
 		<div class="projectOverview">
 			<p style="grid-area: headerDisplay; padding: 10px;">Project Overview</p>
-			<text contenteditable="false" style="grid-area: costDisplay">Total Cost: $800</text>
-			<text contenteditable="false" style="grid-area: priceDisplay">Total Price: $1000</text>
-			<text contenteditable="false" style="grid-area: paymentsDisplay">Payments Recieved: $300</text>
+			<text contenteditable="false" style="grid-area: costDisplay">Total Cost: $0</text>
+			<text contenteditable="false" style="grid-area: priceDisplay">Total Price: $0</text>
+			<text id="paymentsText" contenteditable="false" style="grid-area: paymentsDisplay">Payments Recieved: $0</text>
 			<input type="text" id="addPayment" placeholder="Add Payments" style="grid-area: newPayment"></input>
-				<button onclick="createProject()" style="grid-area: newPaymentButton"></button>
+				<button onclick="AddPayment()" style="grid-area: newPaymentButton"></button>
 		</div>
 		<div id="TheBigOne" class="theBigOne">
 			<h class="header">Projects</h>

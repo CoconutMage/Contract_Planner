@@ -288,6 +288,22 @@ function connectWebsocket(server)
 				});
 			}
 
+			if(e.data.includes("UpdateProjectPayments"))
+			{
+				var params = e.data.replace("UpdateProjectPayments:", "").split(':');
+
+				var queryRequest = 'UPDATE ProjectList SET Payments=' + params[1] + ' WHERE ProjectName=\'' + params[0] + '\'';
+				console.log(queryRequest);
+				//db.run(`DELETE FROM ? WHERE rowid=?`,[tableName, rowid], function(err) 
+				db.run(queryRequest, function(err) 
+				{
+					if (err) 
+					{
+						return console.log(err.message);
+					}
+				});
+			}
+
 			/////////////////////////////////////////////////////////////////////////////////////////
 
 			if(e.data.includes("TableData"))
