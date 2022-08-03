@@ -350,13 +350,13 @@ function connectWebsocket(server)
 				db.serialize(() => 
 				{
 					ri = 0;
-					var numRows = 11;
+					var numRows = 9;
 					for(i  = 0; i < recData.length - 1; i++)
 					{
 						if(i%numRows == 0)
 						{
 							ri = (i%numRows) + 1;
-							//console.log(ri);
+							console.log(ri);
 						}
 
 						if(recData[i].Row != undefined)

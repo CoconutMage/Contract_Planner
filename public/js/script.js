@@ -190,8 +190,12 @@ function removeSupportingTables(removalTableData)
 	var i = 0;
 	for (rmData of removalTableData)
 	{
-		if (i == 0) continue;
-		i++;
+		console.log("Removing Support Table: " + rmData["Material Cost"]);
+		if (i == 0)
+		{
+			i++;
+			continue;
+		}
 		websocket.dropTable(rmData["Material Cost"]);
 		websocket.dropTable(rmData["Subcontractor Fee"]);
 	}
