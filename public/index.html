@@ -3,13 +3,13 @@
 	<head>
 	</head>
 	<body onload="Start()">
-		<div class="projectOverview">
+		<div class="projectOverview" style="display: none">
 			<p style="grid-area: headerDisplay; padding: 10px;">Project Overview</p>
 			<text contenteditable="false" style="grid-area: costDisplay">Total Cost: $0</text>
 			<text contenteditable="false" style="grid-area: priceDisplay">Total Price: $0</text>
 			<text id="paymentsText" contenteditable="false" style="grid-area: paymentsDisplay">Payments Recieved: $0</text>
 			<input type="text" id="addPayment" placeholder="Add Payments" style="grid-area: newPayment"></input>
-				<button onclick="AddPayment()" style="grid-area: newPaymentButton"></button>
+				<button onclick="AddPayment()" style="grid-area: newPaymentButton">Add Payment</button>
 		</div>
 		<div id="TheBigOne" class="theBigOne">
 			<h class="header">Projects</h>

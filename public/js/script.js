@@ -153,8 +153,16 @@ function NumberToString(data)
 function AddPayment()
 {
 	projectPayments[currentProjectDisplayed] += parseInt(document.getElementById('addPayment').value);
+	console.log(currentProjectDisplayed);
 	document.getElementById("paymentsText").innerHTML = "Payments Recieved: $" + projectPayments[currentProjectDisplayed];
 	websocket.updateProjectPayments(currentProjectDisplayed, projectPayments[currentProjectDisplayed]);
+}
+
+function DisplayProjectInfo(projectName)
+{
+	currentProjectDisplayed = projectName;
+	document.getElementsByClassName("projectOverview")[0].style.display = "grid";
+	document.getElementById("paymentsText").innerHTML = "Payments Recieved: $" + projectPayments[projectName];
 }
 
 function createProject()
@@ -305,7 +313,7 @@ function getHtmlForProjectList(i, projectName)
 	//infoButton.setAttribute("onclick", functionCall);
 	infoButton.setAttribute("class", "projectInfoButton");
 	infoButton.setAttribute("src", "images/infoIcon.png")
-	infoButton.setAttribute("onclick", `currentProjectDisplayed=${projectName}`);
+	infoButton.setAttribute("onclick", `DisplayProjectInfo('${projectName}');`);
 	//buttonTwo.innerHTML = "Delete Project";
 
 	var button = document.createElement('button');
