@@ -1,0 +1,113 @@
+body {
+    background-color: #2D1115;
+      color: white;
+  }
+  
+  .anybutton {
+    /*top:11%;
+    left:55%;
+    width:100px;
+    height:40px;
+    position: absolute;
+    z-index: 2;*/
+    background: #487878; 
+  }
+  
+  .addSubButton {
+    width: 20px;
+    height: 20px;
+    z-index: 2;
+    background: #487878; 
+  }
+
+  .tableCellDropdown {
+    width: 20px;
+    height: 18px;
+    background: #487878;
+  }
+
+  table, th, td {
+    border: 1px solid #65334D;
+    text-align: center;
+  }
+
+  th {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  /* Dropdown Button */
+  .dropbtn {
+    background-color: #dbca34;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  /* Dropdown button on hover & focus */
+  .dropbtn:hover, .dropbtn:focus {
+    background-color: #2980B9;
+  }
+  
+  /* The container <div> - needed to position the dropdown content */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  /* Dropdown Content (Hidden by Default) */
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #d3d3d3;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    color: black;
+  }
+  
+  /* Links inside the dropdown */
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  /* Change color of dropdown links on hover */
+  .dropdown-content a:hover {background-color: #ddd}
+
+  .splitMenuDropDown {
+    display: none;
+    position: absolute;
+    background-color: #7e2b2b;
+    min-width: 160px;
+    min-height: 100px;
+    left: 0px;
+    top: 0px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    color: black;
+  }
+
+  .changeOrderMenuDropDown {
+    display: none;
+    position: absolute;
+    background-color: #7e2b2b;
+    min-width: 160px;
+    min-height: 100px;
+    left: 0px;
+    top: 0px;
+    width: 650px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    color: black;
+  }
+
+  .changeOrderButton {
+    background: #487878; 
+  }
+  
+  /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+  .show {display:block;}

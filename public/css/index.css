@@ -1,0 +1,140 @@
+:root {
+  --projectListingWidth: 350px;
+  --blue: #1e90ff;
+  --white: #ffffff;
+}
+
+body {
+  background-color: #2D1115;
+	color: white;
+}
+
+.anybutton {
+  right: 40px;
+  width: 60px;
+  height: 20px;
+  position: absolute;
+  z-index: 2;
+  background: #487878; 
+}
+
+.removeProjectButton {
+  right: 15px;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  z-index: 2;
+  /*background: rgb(156, 76, 0);*/
+}
+
+.projectOverview {
+  position: absolute;
+  right: 50px;
+  display: grid;
+  grid-template-areas:
+  'headerDisplay null'
+  'costDisplay null'
+  'priceDisplay null'
+  'paymentsDisplay null'
+  'newPayment newPaymentButton';
+  row-gap: 10px;
+  column-gap: 5px;
+  padding: 10px;
+  width: var(--projectListingWidth);
+}
+
+.header {
+  padding: 10px;
+}
+
+.projectInfoButton {
+  right: 105px;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  z-index: 2;
+  /*background: rgb(156, 76, 0);*/
+}
+
+.addProjectButton {
+  grid-area: addProject;
+}
+
+.topMenuGridContainer {
+  display: grid;
+  grid-template-areas:
+  'bulkAdd null null'
+  'newProjectTextInput newProjectTextinput addProject';
+  row-gap: 10px;
+  column-gap: 5px;
+  padding: 10px;
+  width: var(--projectListingWidth);
+}
+
+.theBigOne {
+  display: grid;
+  justify-content: left;
+  padding: 20px;
+  gap: 20px
+}
+
+.bulkAddPageLoader {
+  /*width: 80px;
+  height: 30px;
+  display: block;
+  position: absolute;*/
+  z-index: 2;
+  background: rgb(78, 61, 5); 
+  grid-area: bulkAdd;
+}
+
+.collapsibleButton {
+  background-color: darkslategray;
+  color: white;
+  cursor: pointer;
+  padding: 10px;
+  width: var(--projectListingWidth);
+  height: 43px;
+  border: none;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  outline: none;
+  font-size: 15px;
+}
+
+.collapsibleArrowImageOpen {
+  width: 32px;
+  height: 20px;
+}
+
+.collapsibleArrowImageClose {
+  width: 20px;
+  height: 32px;
+  padding-left: 6px;
+}
+
+.active, .collapsible:hover {
+  background-color: rgb(33, 56, 56);
+}
+
+.collapsibleList {
+  display: grid;
+  justify-content: space-between;
+  gap: 5px;
+  padding: 10px;
+}
+
+.draggableProject {
+  border: 3px solid #666;
+  background-color: #ddd;
+  color:rgb(0, 0, 0);
+  border-radius: .5em;
+  padding: 10px;
+  cursor: move;
+  display: inline;
+  width: var(--projectListingWidth);
+  position: relative;
+  left: -13px;
+  /*justify-content: space-between;*/
+}

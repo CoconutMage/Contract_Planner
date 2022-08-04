@@ -3,71 +3,50 @@
 	<head>
 	</head>
 	<body onload="Start()">
-		<button type="button" onclick="revealMessage()" style="display:none">Click for JavaScript execution!</button>
-		<div id="hiddenMessage" style="display:none">
-			<p>This is a test message!</p>
-			<p id="counterText">5</p>
-			<button type="button" id="countUpButton" onclick="countUp()">Click to increment</button>
-			<button type="button" id="countDownButton" onclick="countDown()">Click to decrement</button>
+		<div class="projectOverview" style="display: none">
+			<p style="grid-area: headerDisplay; padding: 10px;">Project Overview</p>
+			<text contenteditable="false" style="grid-area: costDisplay">Total Cost: $0</text>
+			<text contenteditable="false" style="grid-area: priceDisplay">Total Price: $0</text>
+			<text id="paymentsText" contenteditable="false" style="grid-area: paymentsDisplay">Payments Recieved: $0</text>
+			<input type="text" id="addPayment" placeholder="Add Payments" style="grid-area: newPayment"></input>
+				<button onclick="AddPayment()" style="grid-area: newPaymentButton">Add Payment</button>
 		</div>
-    	<div style="display:none">
-			<button type="button" id="test" onclick="generateTable()" >Click to Bazinga</button>
-			<button type="button" id="test" onclick="addTableRow()" >Click add new row</button>
-			<button type="button" id="test" onclick="removeTableRow()" >Click to remove row</button>
+		<div id="TheBigOne" class="theBigOne">
+			<h class="header">Projects</h>
+
+			<!--<button type="button" onclick="websocket.addTable('TABLETABLETABLE')">Add Table</button>
+			<button type="button" onclick="websocket.dropTable('TABLETABLETABLE')">Drop Table</button>-->
+			
+			<div class="topMenuGridContainer">
+				<!--<button type="button" id="EditBulkAdd" class="bulkAddPageLoader" onclick="window.location.href='html/bulkAddEditor.html';">Edit bulk add dropdown</button>-->
+				<input type="text" id="newProjectText" placeholder="New Project Name" style="grid-area: newProjectTextInput"></input>
+				<button onclick="createProject()" class="addProjectButton">Add Project</button>
+			</div>
+	
+			<div input="button" id="ActiveListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsibleButton">
+				<text style="display:none">0</text>
+				<img src="images/dropDownArrowOpen.png" id="img" class="collapsibleArrowImageOpen" style="pointer-events: none;"></img>
+				<!--id="activeCollapsibleArrowImage"-->
+				<text style="padding-left: 10px; pointer-events: none;">Active</text>
+			</div>
+			<div id="ActiveList" class="collapsibleList" style="display: none"></div>
+
+			<div input="button" id="ProposalListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsibleButton">
+				<text style="display:none">1</text>
+				<img src="images/dropDownArrowOpen.png" id="img" class="collapsibleArrowImageOpen" style="pointer-events: none;"></img>
+				<text style="padding-left: 10px; pointer-events: none;">Proposals</text>
+			</div>
+			<div id="ProposalList" class="collapsibleList" style="display: none"></div>
+
+			<div input="button" id="CompletedListHeader" ondrop="dropProject(event)" ondragover="allowDrop(event)" class="collapsibleButton">
+				<text style="display:none">2</text>
+				<img src="images/dropDownArrowOpen.png" id="img" class="collapsibleArrowImageOpen" style="pointer-events: none;"></img>
+				<text style="padding-left: 10px; pointer-events: none;">Completed</text>
+			</div>
+			<div id="CompletedList" class="collapsibleList" style="display: none"></div>
+
+			<script src="js/script.js"></script>
+			<link rel="stylesheet" type="text/css" href="css/index.css" />
 		</div>
-
-	<div id="reactContainer"></div>
-
-	<!--This div is fucking haunted-->
-	<div id="test"></div>
-	<!--Edit: No it's not, I just made the dumb assumption that nothing else had an id of "test" and so I spent like 20 minutes trying to figure out what I was doing wrong-->
-
-	<div>Top</div>
-	<div id="top">Top</div>
-	<div>Middle</div>
-	<div id="middle">Middle</div>
-	<div>Bottom</div>
-	<div id="bottom">Bottom</div>
-
-	<div id="projectList" class="projectListing">
-		<span>1064 Shillelagh rd</span>
-		<span input type="button" onclick="Bazanga()" style="background-color:blue;">Button</span>
-	</div>
-
-	<button type="button" class="collapsible">Active</button>
-	<button type="button" class="collapsible">Proposals</button>
-	<button type="button" class="collapsible">Completed</button>
-	<button type="button" class="anybutton" onclick="Bazanga()">Add Project</button>
-
-	<!--
-	<table id = "bazingaTable" style="display:none">
-		<thead> </thead>
-
-		<tbody id = "Bazinga"></tbody>
-	</table>
-
-    <table id = "bazingaTable2" style="display:none">
-		<thead> </thead>
-		<tbody id = "Bazinga2"></tbody>
-	</table>
-
-    <table id = "bazingaTable3" style="display:none">
-		<thead> </thead>
-		<tbody id = "Bazinga3"></tbody>
-	</table>-->
-
-		<button type="button" class="anybutton" onclick="Bazanga()">Add Project</button>
-
-		<!--<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-		<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-		<script src="js/react_like_button.js"></script>-->
-
-		<table>
-			<thead id = "tableHead"></thead>
-			<tbody id = "tableData"></tbody>
-		</table>
-		
-		<script src="/script.js"></script>
-		<link rel="stylesheet" type="text/css" href="/index.css" />
 	</body>
 </html>
