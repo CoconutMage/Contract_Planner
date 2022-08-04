@@ -1,11 +1,13 @@
 let tableData = [];
 let splitData = [];
 let changeOrders = [];
+let paidCheckVals = [];
 var saveImminent = false;
 var tableName = NumberToString(sessionStorage.getItem("tableName").replaceAll(" ", "")) + "Budget";
 var splitTableName = "";
 const checkBoxVal = new Array(41);
 var numChangeOrders = 0;
+var splitRowNum = 0;
 
 function Start()
 {
@@ -135,6 +137,12 @@ function websocket()
 		ws.send(data);
 	}
 	websocket.sendMessageWithData = sendMessageWithData;
+
+	function sendSubTable(subTable, arr) 
+	{
+		ws.send("SaveSubTable:" + subTable + "-:-" + arr);
+	}
+	websocket.sendSubTable = sendSubTable;
 	//////////////////////////////////////////////////////////
 }
 
@@ -271,7 +279,7 @@ function splitTableGen()
 	for (i = 0; i < tableKeys.length; i++) 
 	{
 		splitDataTableHead += 
-		`<th id = "tableKey">${tableKeys[i]}</th>`
+		`<th id = "splitTableKey">${tableKeys[i]}</th>`
 	}
 	splitDataTableHead += 
 		`<th>
@@ -380,7 +388,7 @@ function addLineItemForSplit(data, isNew, itemName = "Item Name")
 {
 	console.log("Adding Line Item Split");
 	let tableKeys = Object.keys(splitData[0]);
-	splitDataHtml += `<tr id = "tableRow_${rowNumber}">`;
+	splitDataHtml += `<tr id = "tableRow_${splitRowNum}">`;
 	for (i = 0; i < tableKeys.length; i++) 
 	{
 		var cellID = tableKeys[i] + "_" + i;
@@ -397,11 +405,12 @@ function addLineItemForSplit(data, isNew, itemName = "Item Name")
 		}
 
 		//if (i != 0) dataHtml += `<td id = ${cellID} contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`
-		if (i != 3) splitDataHtml += `<td id = "td" contenteditable="true" style="text-align:center" oninput="splitTableSaveTimer()">${keyName}</td>`;
+		if (i != 3) splitDataHtml += `<td id = "std" contenteditable="true" style="text-align:center" oninput="splitTableSaveTimer()">${keyName}</td>`;
 		else
 		{
 			//splitDataHtml += `<td input="checkbox" id="split${rowNumber}Paid" name="split${rowNumber}Paid" value="" onchange="">`
-			splitDataHtml += `<td><input type="checkbox" id="split${rowNumber}Paid" name="split${rowNumber}Paid" value="" onchange="splitTableSaveTimer()"></td>`
+			//splitDataHtml += `<td id="stdCheck"><input type="checkbox" id="split${rowNumber}Paid"name="split${rowNumber}Paid" value="" onchange="splitTableSaveTimer()"></td>`
+			splitDataHtml += `<td id="splitPaid${splitRowNum}"><input type="checkbox" id="std" name="splitPaid${rowNumber}" value="" onchange="splitTableSaveTimer(); paidCheckChange(${splitRowNum});"></td>`
 		}
 		/*else if (i == 4 || i ==5)
 		{
@@ -416,6 +425,12 @@ function addLineItemForSplit(data, isNew, itemName = "Item Name")
 	{
 		websocket.addRowToSplit(splitTableName);
 	}
+	splitRowNum++;
+}
+
+function paidCheckChange(id)
+{
+	paidCheckVals[id] = !paidCheckVals[id];
 }
 
 function tableSaveTimer()
@@ -497,6 +512,7 @@ function saveTable()
 {
     console.log("saving table");
     saveImminent = false;
+
 	let keys = [];
 	let values = [];
 	let readKeys = document.querySelectorAll('[id=tableKey]');
@@ -505,7 +521,7 @@ function saveTable()
 
 	for(i = 0; i < readKeys.length; i++)
 	{
-		keys[i] = readKeys[i].textContent;
+		keys[i] = (readKeys[i].textContent).replace(" ", "");
 		console.log("kEYS: " + keys[i]);
 	}
 	for(i = 0; i < readValues.length; i++)
@@ -513,6 +529,7 @@ function saveTable()
 		values[i] = (readValues[i].textContent).replace(/(\n|\t)/gm, "");//((readValues[i].textContent.split("\n")[1]).split("\t"))[4];
 		console.log(readValues[i].textContent);
     }
+	values[3]
 	
 	for (let i = 0, ii = 0; i < arr.length; i++, ii++) 
 	{
@@ -529,6 +546,32 @@ function saveSplitTable()
     console.log("saving split table");
     saveImminent = false;
 	
+	let keys = [];
+	let values = [];
+	let readKeys = document.querySelectorAll('[id=splitTableKey]');
+	let readValues = document.querySelectorAll('[id=std]');
+	let arr = new Array(readValues.length);
+
+	for(i = 0; i < readKeys.length; i++)
+	{
+		keys[i] = (readKeys[i].textContent).replace(" ", "");
+		console.log("kEYS: " + keys[i]);
+	}
+	for(i = 0; i < readValues.length; i++)
+	{
+		if (readValues[i].nodeName == "TD") values[i] = (readValues[i].textContent).replace(/(\n|\t)/gm, "");//((readValues[i].textContent.split("\n")[1]).split("\t"))[4];
+		else values[i] = paidCheckVals[readValues[i].parentElement.id.replace("splitPaid", "")];
+		console.log(readValues[i].parentElement.id + " : " + values[i]);
+    }
+	
+	for (let i = 0, ii = 0; i < arr.length; i++, ii++) 
+	{
+		arr[i] = {[keys[ii%keys.length]] : values[i]};
+		//console.log(JSON.stringify(arr[i]));
+	}
+	console.log(JSON.stringify(arr));
+	//send
+	websocket.sendSubTable(splitTableName, JSON.stringify(arr));
 }
 
 /* When the user clicks on the button,
