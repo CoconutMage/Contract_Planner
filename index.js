@@ -149,7 +149,7 @@ function connectWebsocket(server)
 					{
 						console.log("Row Added");
 
-						var splitTableName = params.split(':')[0] + params.split(':')[1] + 'SubSplit';
+						var splitTableName = params.split(':')[0] + params.split(':')[2] + 'SubSplit';
 
 						sql = `CREATE TABLE IF NOT EXISTS '${splitTableName}'
 						(
@@ -189,7 +189,7 @@ function connectWebsocket(server)
 							}
 						});
 
-						var matTableName = params.split(':')[0] + params.split(':')[1] + 'MatSplit';
+						var matTableName = params.split(':')[0] + params.split(':')[2] + 'MatSplit';
 
 						sql = `CREATE TABLE IF NOT EXISTS '${matTableName}'
 						(
@@ -551,11 +551,11 @@ function connectWebsocket(server)
 								} 
 							});
 						}
-						/*if(recData[i].SubcontractorFee != undefined)
+						if(recData[i].SubcontractorFee != undefined)
 						{
-							var queryRequest = 'UPDATE ' + tableName + ' SET SubcontractorFee=' + recData[i].SubcontractorFee + ' WHERE Row=' + ri;
+							var queryRequest = `UPDATE ${tableName} SET 'Subcontractor Fee'= '${recData[i].SubcontractorFee}' WHERE Row=${ri}`;
 							console.log(queryRequest);
-							db.run(queryRequest, [param1, param2], (err) => 
+							db.run(queryRequest, /*[param1, param2],*/ (err) => 
 							{
 								if (err) 
 								{
@@ -565,16 +565,16 @@ function connectWebsocket(server)
 						}
 						if(recData[i].MaterialCost != undefined)
 						{
-							var queryRequest = 'UPDATE ' + tableName + ' SET MaterialCost=' + recData[i].MaterialCost + ' WHERE Row=' + ri;
+							var queryRequest = `UPDATE ${tableName} SET 'Material Cost'= '${recData[i].MaterialCost}' WHERE Row=${ri}`;
 							console.log(queryRequest);
-							db.run(queryRequest, [param1, param2], (err) => 
+							db.run(queryRequest, /*[param1, param2],*/ (err) => 
 							{
 								if (err) 
 								{
 									console.log(err)
 								} 
 							});
-						}*/
+						}
 						if(recData[i].PrelimCost != undefined)
 						{
 							var queryRequest = `UPDATE ${tableName} SET 'Prelim Cost'= ${recData[i].PrelimCost} WHERE Row=${ri}`;

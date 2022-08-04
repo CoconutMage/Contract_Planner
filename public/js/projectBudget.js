@@ -369,7 +369,7 @@ function addLineItem(data, isNew, itemName = "Item Name")
 		else if (i == 4 || i ==5)
 		{
 			dataHtml += `<td id = "td" contenteditable="false" style="text-align:center" oninput="tableSaveTimer()">`;
-			dataHtml += `  <button type="button" class="tableCellDropdown" onclick="displaySplit('${keyName}')"></button></td>`;
+			dataHtml += `  <button type="button" id="splitBut${keyName}"class="tableCellDropdown" onclick="displaySplit('${keyName}')"></button></td>`;
 		}
 		else dataHtml += `<td id = "td" contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`;
 	}
@@ -526,8 +526,9 @@ function saveTable()
 	}
 	for(i = 0; i < readValues.length; i++)
 	{
-		values[i] = (readValues[i].textContent).replace(/(\n|\t)/gm, "");//((readValues[i].textContent.split("\n")[1]).split("\t"))[4];
-		console.log(readValues[i].textContent);
+		if (readValues[i].children[0] == undefined) values[i] = (readValues[i].textContent).replace(/(\n|\t)/gm, "");//((readValues[i].textContent.split("\n")[1]).split("\t"))[4];
+		else values[i] = readValues[i].children[0].getAttribute("onclick").split("'")[1];
+		//else console.log(readValues[i].children[0].getAttribute("onclick").split("'")[1]);
     }
 	values[3]
 	
@@ -587,8 +588,9 @@ function displaySplit(data)
 	splitDataHtml = '';*/
 	splitTableBody.innerHTML = "";
 	var left = 0;
-	console.log(data);
-	var top = 105 + (30 * parseInt(data.replace("SubSplit", "").replace("Mat", "").replace(`${tableName}`, "")));
+	//var top = 105 + (30 * parseInt(data.replace("SubSplit", "").replace("Mat", "").replace(`${tableName}`, "")));
+	console.log(document.getElementById("splitBut" + data).parentElement.parentElement.id);
+	var top = 95 + (30 * parseInt(document.getElementById("splitBut" + data).parentElement.parentElement.id.replace("tableRow_", "")));
 	if (data.includes("Mat")) left = 385;
 	else left = 230;
 	document.getElementById("splitMenu").classList.toggle("show");
