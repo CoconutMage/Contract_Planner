@@ -162,7 +162,15 @@ function DisplayProjectInfo(projectName)
 {
 	currentProjectDisplayed = projectName;
 	document.getElementsByClassName("projectOverview")[0].style.display = "grid";
+	document.getElementById("projectOverViewHeader").innerHTML = "Project Overview: " + projectName;
 	document.getElementById("paymentsText").innerHTML = "Payments Recieved: $" + projectPayments[projectName];
+	document.getElementById("genPropButton").setAttribute("onclick", `GenerateProposal('${projectName}')`);
+}
+
+function GenerateProposal(projectName)
+{
+	console.log('Generate: ' + projectName);
+	window.location.href='html/projectProposal.html';
 }
 
 function createProject()
