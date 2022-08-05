@@ -36,7 +36,8 @@ body {
   'costDisplay null'
   'priceDisplay null'
   'paymentsDisplay null'
-  'newPayment newPaymentButton';
+  'newPayment newPaymentButton'
+  'genProposalButton noyef';
   row-gap: 10px;
   column-gap: 5px;
   padding: 10px;
