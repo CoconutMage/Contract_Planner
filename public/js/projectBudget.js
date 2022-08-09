@@ -391,6 +391,7 @@ function addLineItem(data, isNew, itemName = "Item Name")
 			dataHtml += `  <button type="button" id="splitBut${keyName}" class="tableCellDropdown" onclick="displaySplit('${keyName}')"></button></text></td>`;
 		}
 		else if (i == 9) continue;
+		else if (i == 8) dataHtml += `<td id = "td" contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">0</td>`;
 		else dataHtml += `<td id = "td" contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`;
 	}
 	if (data != null && data["ChangeID"]) dataHtml += `<td><button type="button" class="anyButton" onclick="removeLineItem(this)">Remove line item</button> <button type="button" class="changeOrderButton" onclick="ViewChangeOrders('${rowNumber}', '${data["ChangeID"]}')">Change Order</button></td></tr>`;
