@@ -65,6 +65,7 @@ body {
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
     color: black;
+    grid-template-columns: 160px 160px 160px;
   }
   
   /* Links inside the dropdown */
@@ -110,4 +111,5 @@ body {
   }
   
   /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
-  .show {display:block;}
+  .show {display:grid;}
+  .showSplit {display:block;}

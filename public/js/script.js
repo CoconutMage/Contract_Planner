@@ -4,6 +4,7 @@ let removalTableData = [];
 let projectNameToRowID = {};
 var numProjects = 0;
 var currentProjectDisplayed = "";
+var saveImminent = false;
 
 function Start()
 {
@@ -122,6 +123,13 @@ function websocket()
 		ws.send(wsMessage);
 	}
 	websocket.updateProjectPayments = updateProjectPayments;
+
+	function updateProjectName(projectName, newName) 
+	{
+		var wsMessage = "UpdateProjectName:" + projectName + ":" + newName;
+		ws.send(wsMessage);
+	}
+	websocket.updateProjectName = updateProjectName;
 
 	function sendMessageWithData(data)
 	{
@@ -315,7 +323,14 @@ function getHtmlForProjectList(i, projectName)
 	newElement.setAttribute("draggable", true);
 	newElement.setAttribute("ondragstart", "drag(event)");
 	newElement.setAttribute("class", "draggableProject");
-	newElement.innerHTML = projectName;
+	//newElement.setAttribute("contentEditable", "true");
+	//newElement.innerHTML = projectName;
+
+	var elem = document.createElement("input");
+	elem.setAttribute("type", "text");
+	elem.setAttribute("value", `${projectName}`);
+	elem.setAttribute("oninput", `updateProjectName('${projectName}')`)
+	elem.setAttribute("id", `${projectName}`)
 
 	var infoButton = document.createElement('img');
 	//infoButton.setAttribute("onclick", functionCall);
@@ -325,8 +340,9 @@ function getHtmlForProjectList(i, projectName)
 	//buttonTwo.innerHTML = "Delete Project";
 
 	var button = document.createElement('button');
-	button.setAttribute("onclick", "window.location.href='html/projectBudget.html'; sessionStorage.setItem('tableName','" + projectName + "');");
+	button.setAttribute("onclick", `openProjectBudget('${projectName}');`);
 	button.setAttribute("class", "anybutton");
+	button.setAttribute("id", `displayBudget${projectName}`)
 	button.innerHTML = "Budget";
 
 	var removeProjectButton = document.createElement('img');
@@ -340,6 +356,7 @@ function getHtmlForProjectList(i, projectName)
 	removeProjectButton.setAttribute("src", "images/removeIcon.png")
 	//removeProjectButton.innerHTML = "Delete Project";
 
+	newElement.appendChild(elem);
 	newElement.appendChild(infoButton);
 	newElement.appendChild(button);
 	newElement.appendChild(removeProjectButton);
@@ -367,4 +384,16 @@ function dropProject(ev)
 	else if (ev.target.firstElementChild.innerHTML == 2) websocket.updateProjectStatus(document.getElementById(data).innerHTML.split('"')[0].split('<')[0], 2);
 	ev.target.nextElementSibling.appendChild(document.getElementById(data));
 	//Change project status here
+}
+function updateProjectName(oldProjectName)
+{
+	var secondsBetweenAutosave = 1
+	document.getElementById(`displayBudget${oldProjectName}`).setAttribute("onclick", `openProjectBudget('${document.getElementById(oldProjectName).value}');`);
+    if (!saveImminent) setTimeout(function() {websocket.updateProjectName(oldProjectName, document.getElementById(oldProjectName).value); saveImminent=false;}, secondsBetweenAutosave * 1000);
+    saveImminent = true;
+}
+function openProjectBudget(tableName)
+{
+	window.location.href='html/projectBudget.html';
+	sessionStorage.setItem('tableName',`${tableName}`);
 }

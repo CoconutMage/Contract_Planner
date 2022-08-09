@@ -1,5 +1,6 @@
 let tableData = [];
 let splitData = [];
+let bulkData = [];
 let changeOrders = [];
 let paidCheckVals = [];
 var saveImminent = false;
@@ -37,6 +38,7 @@ function websocket()
 	{
 		//ws.send('Bazinga');
 		ws.send('RequestTable' + tableName + ":Budget");
+		ws.send('RequestTableBulkItem:BulkItem');
 	};
 
 	ws.onmessage = function (event)
@@ -49,6 +51,14 @@ function websocket()
 			console.log(data);
 			tableData = JSON.parse(data);
 			tableGenTest();
+		}
+		else if (event.data.split("-:-")[1] == "BulkItem")
+		{
+			data = [];
+			data = event.data.split('-:-')[0];
+
+			bulkData = JSON.parse(data);
+			bulkDropdownGen();
 		}
 		else
 		{
@@ -143,6 +153,20 @@ function websocket()
 		ws.send("SaveSubTable:" + subTable + "-:-" + arr);
 	}
 	websocket.sendSubTable = sendSubTable;
+
+	function updateSubTotal(val, row) 
+	{
+		var wsMessage = "UpdateSubTotal:" + tableName + ":" + val + ":" + row;
+		ws.send(wsMessage);
+	}
+	websocket.updateSubTotal = updateSubTotal;
+
+	function updateMatTotal(val, row)
+	{
+		var wsMessage = "UpdateMatTotal:"  + tableName + ":" + val + ":" + row;
+		ws.send(wsMessage);
+	}
+	websocket.updateMatTotal = updateMatTotal;
 	//////////////////////////////////////////////////////////
 }
 
@@ -211,8 +235,9 @@ function tableGenTest()
 	let tableKeys = Object.keys(tableData[0]);
 	for (i = 0; i < tableKeys.length - 2; i++) 
 	{
-		dataTableHead += 
-		`<th id = "tableKey">${tableKeys[i]}</th>`
+		if (i == 9) continue;
+		if (i != 8) dataTableHead += `<th id = "tableKey">${tableKeys[i]}</th>`;
+		else dataTableHead += `<th id = "tableKey">Final Cost</th>`;
 	}
 	dataTableHead += 
 	`<th>
@@ -288,27 +313,16 @@ function splitTableGen()
 	splitTableHead.innerHTML = splitDataTableHead;
 
 	var i = 0;
+	var totalSplitVal = 0;
 	for (sData of splitData)
 	{
 		console.log(sData);
-		if (i != 0) addLineItemForSplit(sData, false);
+		if (i != 0) totalSplitVal += addLineItemForSplit(sData, false);
 		i++;
-		/*
-		dataHtml += `<tr id = "tableRow_${rowNumber}">`;
-		for (i = 0; i < tableKeys.length; i++)
-		{
-			var cellID = tableKeys[i] + "" + i;
-			dataHtml +=
-			`<td id = ${cellID} contenteditable="true" oninput="tableSaveTimer()">
-				${data[tableKeys[i]]}
-			</td>`
-			`<td id = "td"" contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">
-				${data[tableKeys[i]]}
-			</td>`
-		}
-		dataHtml += `<td><button type="button" class="anyButton" onclick="removeLineItem(this)">Remove line item</button> <button type="button" class="anyButton" onclick="removeLineItem(this)">Change</button></td></tr>`;
-		rowNumber += 1;*/
 	}
+	console.log("val2: " + totalSplitVal);
+	//This is the code to set the split cell value to the total and also keep the button
+	document.getElementById("splitText" + splitTableName).innerHTML = totalSplitVal + document.getElementById("splitText" + splitTableName).firstElementChild.outerHTML;
 }
 
 function removeLineItem(element)
@@ -349,12 +363,16 @@ function addLineItem(data, isNew, itemName = "Item Name")
 				if (tableData[rowNumber]) tableData[rowNumber]["Subcontractor Fee"] = keyName;
 				else tableData[rowNumber] = {"Subcontractor Fee": keyName};
 			}
-			else if (i ==5)
+			else if (i == 5)
 			{
 				keyName = (tableName + rowNumber + "MatSplit");
 				if (tableData[rowNumber]) tableData[rowNumber]["Material Cost"] = keyName;
 				else tableData[rowNumber] = {"Material Cost": keyName};
 			}
+			/*else if (i == 7)
+			{
+				keyName = 0
+			}*/
 			else if(i != 1 && i != tableKeys.length - 3) keyName = 0;
 			else if (i == 1) keyName = itemName;
 			else if (i == tableKeys.length - 3) keyName = "";
@@ -369,8 +387,10 @@ function addLineItem(data, isNew, itemName = "Item Name")
 		else if (i == 4 || i ==5)
 		{
 			dataHtml += `<td id = "td" contenteditable="false" style="text-align:center" oninput="tableSaveTimer()">`;
-			dataHtml += `  <button type="button" id="splitBut${keyName}"class="tableCellDropdown" onclick="displaySplit('${keyName}')"></button></td>`;
+			dataHtml += `  <text id="splitText${keyName}" style="padding-right:30px; padding-left:30px">${data[tableKeys[i + 4]]}`;
+			dataHtml += `  <button type="button" id="splitBut${keyName}" class="tableCellDropdown" onclick="displaySplit('${keyName}')"></button></text></td>`;
 		}
+		else if (i == 9) continue;
 		else dataHtml += `<td id = "td" contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`;
 	}
 	if (data != null && data["ChangeID"]) dataHtml += `<td><button type="button" class="anyButton" onclick="removeLineItem(this)">Remove line item</button> <button type="button" class="changeOrderButton" onclick="ViewChangeOrders('${rowNumber}', '${data["ChangeID"]}')">Change Order</button></td></tr>`;
@@ -389,6 +409,7 @@ function addLineItemForSplit(data, isNew, itemName = "Item Name")
 	console.log("Adding Line Item Split");
 	let tableKeys = Object.keys(splitData[0]);
 	splitDataHtml += `<tr id = "tableRow_${splitRowNum}">`;
+	var val = 0;
 	for (i = 0; i < tableKeys.length; i++) 
 	{
 		var cellID = tableKeys[i] + "_" + i;
@@ -405,7 +426,12 @@ function addLineItemForSplit(data, isNew, itemName = "Item Name")
 		}
 
 		//if (i != 0) dataHtml += `<td id = ${cellID} contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`
-		if (i != 3) splitDataHtml += `<td id = "std" contenteditable="true" style="text-align:center" oninput="splitTableSaveTimer()">${keyName}</td>`;
+		if (i == 1)
+		{
+			splitDataHtml += `<td id = "std" contenteditable="true" style="text-align:center" oninput="splitTableSaveTimer();">${keyName}</td>`;
+			val = parseInt(keyName);
+		}
+		else if (i != 3) splitDataHtml += `<td id = "std" contenteditable="true" style="text-align:center" oninput="splitTableSaveTimer()">${keyName}</td>`;
 		else
 		{
 			//splitDataHtml += `<td input="checkbox" id="split${rowNumber}Paid" name="split${rowNumber}Paid" value="" onchange="">`
@@ -426,6 +452,8 @@ function addLineItemForSplit(data, isNew, itemName = "Item Name")
 		websocket.addRowToSplit(splitTableName);
 	}
 	splitRowNum++;
+	console.log("Val: " + val);
+	return val;
 }
 
 function paidCheckChange(id)
@@ -526,8 +554,9 @@ function saveTable()
 	}
 	for(i = 0; i < readValues.length; i++)
 	{
+		console.log(readValues[i].children[0]);
 		if (readValues[i].children[0] == undefined) values[i] = (readValues[i].textContent).replace(/(\n|\t)/gm, "");//((readValues[i].textContent.split("\n")[1]).split("\t"))[4];
-		else values[i] = readValues[i].children[0].getAttribute("onclick").split("'")[1];
+		else if (readValues[i].children[0].children[0] != undefined) values[i] = readValues[i].children[0].children[0].getAttribute("onclick").split("'")[1];
 		//else console.log(readValues[i].children[0].getAttribute("onclick").split("'")[1]);
     }
 	values[3]
@@ -552,6 +581,7 @@ function saveSplitTable()
 	let readKeys = document.querySelectorAll('[id=splitTableKey]');
 	let readValues = document.querySelectorAll('[id=std]');
 	let arr = new Array(readValues.length);
+	var splitVal = 0;
 
 	for(i = 0; i < readKeys.length; i++)
 	{
@@ -560,7 +590,11 @@ function saveSplitTable()
 	}
 	for(i = 0; i < readValues.length; i++)
 	{
-		if (readValues[i].nodeName == "TD") values[i] = (readValues[i].textContent).replace(/(\n|\t)/gm, "");//((readValues[i].textContent.split("\n")[1]).split("\t"))[4];
+		if (readValues[i].nodeName == "TD") 
+		{
+			if ((i+3)%4 == 0) splitVal += parseInt(readValues[i].textContent);
+			values[i] = (readValues[i].textContent).replace(/(\n|\t)/gm, "");//((readValues[i].textContent.split("\n")[1]).split("\t"))[4];
+		}
 		else values[i] = paidCheckVals[readValues[i].parentElement.id.replace("splitPaid", "")];
 		console.log(readValues[i].parentElement.id + " : " + values[i]);
     }
@@ -570,9 +604,11 @@ function saveSplitTable()
 		arr[i] = {[keys[ii%keys.length]] : values[i]};
 		//console.log(JSON.stringify(arr[i]));
 	}
-	console.log(JSON.stringify(arr));
+	console.log(splitTableName.split("Budget")[1].replace("SubSplit", "").replace("MatSplit", ""));
 	//send
 	websocket.sendSubTable(splitTableName, JSON.stringify(arr));
+	if(splitTableName.includes("Sub")) websocket.updateSubTotal(splitVal, splitTableName.split("Budget")[1].replace("SubSplit", "").replace("MatSplit", ""));
+	else websocket.updateMatTotal(splitVal, splitTableName.split("Budget")[1].replace("SubSplit", "").replace("MatSplit", ""));
 }
 
 /* When the user clicks on the button,
@@ -589,11 +625,11 @@ function displaySplit(data)
 	splitTableBody.innerHTML = "";
 	var left = 0;
 	//var top = 105 + (30 * parseInt(data.replace("SubSplit", "").replace("Mat", "").replace(`${tableName}`, "")));
-	console.log(document.getElementById("splitBut" + data).parentElement.parentElement.id);
-	var top = 95 + (30 * parseInt(document.getElementById("splitBut" + data).parentElement.parentElement.id.replace("tableRow_", "")));
+	console.log(document.getElementById("splitBut" + data).parentElement.parentElement.parentElement.id);
+	var top = 95 + (30 * parseInt(document.getElementById("splitBut" + data).parentElement.parentElement.parentElement.id.replace("tableRow_", "")));
 	if (data.includes("Mat")) left = 385;
 	else left = 230;
-	document.getElementById("splitMenu").classList.toggle("show");
+	document.getElementById("splitMenu").classList.toggle("showSplit");
 	document.getElementById("splitMenu").style.setProperty("left", `${left}px`);
 	document.getElementById("splitMenu").style.setProperty("top", `${top}px`);
 	splitTableName = data;
@@ -693,4 +729,29 @@ function BulkAddRows()
 		}
 		checkBoxVal[j] = false;
 	}
+}
+const bulkOrderDropdown = document.getElementById('bulkAddDropdown');
+let bulkOrderHtml = '';
+function bulkDropdownGen()
+{
+	var i = 0;
+	for (data of bulkData)
+	{
+		console.log("bulk: " + bulkData.length);
+		if (i < bulkData.length / 2)
+		{
+			bulkOrderHtml += `<div>`;
+			bulkOrderHtml += `<input type="checkbox" id="bulkAddLineItem${i}" name="bulkAddLineItem${i}" value="${data["ItemVal"]}" onchange="checkBoxChanged(id)">`;
+        	bulkOrderHtml += `<label for="bulkAddLineItem${i}"> ${data["ItemName"]}</label><br></div>`;
+		}
+		else
+		{
+			bulkOrderHtml += `<div>`;
+			bulkOrderHtml += `<input type="checkbox" id="bulkAddLineItem${i}" name="bulkAddLineItem${i}" value="${data["ItemVal"]}" onchange="checkBoxChanged(id)">`;
+        	bulkOrderHtml += `<label for="bulkAddLineItem${i}"> ${data["ItemName"]}</label><br></div>`;
+		}
+		i++;
+	}
+	bulkOrderHtml += `<button onclick="BulkAddRows()">Bulk Add</button>`;
+	bulkOrderDropdown.innerHTML = bulkOrderHtml;
 }

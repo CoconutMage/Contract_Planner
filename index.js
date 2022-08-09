@@ -259,9 +259,10 @@ function connectWebsocket(server)
 			{
 				var params = e.data.replace("AddRowToTableBudget", "");
 				console.log(e.data + " JHBJD");
-				var queryRequest = 'INSERT INTO ' + params.split(':')[0]
-				queryRequest += `(Row, Item, Quantity, Cost, 'Subcontractor Fee', 'Material Cost', 'Prelim Cost', 'Final Cost', 'Profit Margin', Notes)`;
-				queryRequest += `VALUES (${params.split(':')[1]}, 'Item Name', '0', '0', '${params.split(':')[0] + params.split(':')[1]}SubSplit', '${params.split(':')[0] + params.split(':')[1]}MatSplit', '0', '0', '0', '')`
+				var queryRequest = 'INSERT INTO ' + params.split(':')[0];
+				queryRequest += `(Row, Item, Quantity, Cost, 'Subcontractor Fee', 'Material Cost', 'Prelim Cost', 'SubFee', 'MatFee', 'Profit Margin', Notes)`;
+				//queryRequest += 'VALUES (\'0\', \'Item Name\', \'0\', \'0\', \'\', \'\', \'0\', \'0\', \'0\', \'0\', \'\')';
+				queryRequest += `VALUES (${params.split(':')[1]}, 'Item Name', '0', '0', '${params.split(':')[0] + params.split(':')[1]}SubSplit', '${params.split(':')[0] + params.split(':')[1]}MatSplit', '0', '0', '0', '0', '')`
 				//db.run(`INSERT INTO BudgetEstimate DEFAULT VALUES`, function(err) 
 				db.run(queryRequest, function(err) 
 				{
@@ -398,6 +399,40 @@ function connectWebsocket(server)
 				});
 			}
 
+			if(e.data.includes("UpdateSubTotal"))
+			{
+				var params = e.data.replace("UpdateSubTotal:", "").split(':');
+
+				var queryRequest = `UPDATE '${params[0]}' SET SubFee='${params[1]}'WHERE Row='${params[2]}'`;
+				console.log(queryRequest);
+				//db.run(`DELETE FROM ? WHERE rowid=?`,[tableName, rowid], function(err) 
+				db.run(queryRequest, function(err) 
+				{
+					if (err) 
+					{
+						queryInProgress = false;
+						return console.log(err.message);
+					}
+				});
+			}
+
+			if(e.data.includes("UpdateMatTotal"))
+			{
+				var params = e.data.replace("UpdateMatTotal:", "").split(':');
+
+				var queryRequest = `UPDATE '${params[0]}' SET MatFee='${params[1]}'WHERE Row='${params[2]}'`;
+				console.log(queryRequest);
+				//db.run(`DELETE FROM ? WHERE rowid=?`,[tableName, rowid], function(err) 
+				db.run(queryRequest, function(err) 
+				{
+					if (err) 
+					{
+						queryInProgress = false;
+						return console.log(err.message);
+					}
+				});
+			}
+
 			if(e.data.includes("UpdateProjectPayments"))
 			{
 				var params = e.data.replace("UpdateProjectPayments:", "").split(':');
@@ -414,6 +449,36 @@ function connectWebsocket(server)
 					}
 				});
 			}
+
+			if(e.data.includes("UpdateProjectName"))
+			{
+				var params = e.data.replace("UpdateProjectName:", "").split(':');
+
+				var queryRequest = `UPDATE ProjectList SET ProjectName='${params[1]}' WHERE ProjectName='${params[0]}'`;
+				console.log(queryRequest);
+				//db.run(`DELETE FROM ? WHERE rowid=?`,[tableName, rowid], function(err) 
+				db.run(queryRequest, function(err) 
+				{
+					if (err) 
+					{
+						queryInProgress = false;
+						return console.log(err.message);
+					}
+				});
+
+				var queryRequest = `ALTER TABLE ${params[0]}Budget RENAME TO ${params[1]}Budget`;
+				console.log(queryRequest);
+				//db.run(`DELETE FROM ? WHERE rowid=?`,[tableName, rowid], function(err) 
+				db.run(queryRequest, function(err) 
+				{
+					if (err) 
+					{
+						queryInProgress = false;
+						return console.log(err.message);
+					}
+				});
+			}
+
 			if(e.data.includes("SaveSubTable"))
 			{
 				var params = e.data.replace("SaveSubTable:", "");
@@ -587,6 +652,30 @@ function connectWebsocket(server)
 								} 
 							});
 						}
+						if(recData[i].SubFee != undefined)
+						{
+							var queryRequest = `UPDATE ${tableName} SET 'SubFee'= ${recData[i].SubFee} WHERE Row=${ri}`;
+							console.log(queryRequest);
+							db.run(queryRequest, /*[param1, param2],*/ (err) => 
+							{
+								if (err) 
+								{
+									console.log(err)
+								} 
+							});
+						}
+						if(recData[i].MatFee != undefined)
+						{
+							var queryRequest = `UPDATE ${tableName} SET 'MatFee'= ${recData[i].MatFee} WHERE Row=${ri}`;
+							console.log(queryRequest);
+							db.run(queryRequest, /*[param1, param2],*/ (err) => 
+							{
+								if (err) 
+								{
+									console.log(err)
+								} 
+							});
+						}
 						if(recData[i].FinalCost != undefined)
 						{
 							var queryRequest = `UPDATE ${tableName} SET 'Final Cost'= ${recData[i].FinalCost} WHERE Row=${ri}`;
@@ -677,12 +766,12 @@ function connectWebsocket(server)
 					"Subcontractor Fee"	TEXT NOT NULL DEFAULT 0.0,
 					"Material Cost"	TEXT NOT NULL DEFAULT 0.0,
 					"Prelim Cost"	REAL NOT NULL DEFAULT 0.0,
-					"Final Cost"	REAL NOT NULL DEFAULT 0.0,
 					"Profit Margin"	REAL NOT NULL DEFAULT 0.0,
+					"SubFee"	REAL NOT NULL DEFAULT 0.0,
+					"MatFee"	REAL NOT NULL DEFAULT 0.0,
 					"Notes"	TEXT NOT NULL DEFAULT '',
 					"ChangeID"	INTEGER NOT NULL DEFAULT 0,
 					"isChangeOrder" BOOLEAN NOT NULL DEFAULT '0'
-
 				)`;
 				
 				db.run(sql, function(err) 
@@ -695,9 +784,10 @@ function connectWebsocket(server)
 					{
 						console.log(tableName);
 						var queryRequest = 'INSERT INTO ' + tableName
-						queryRequest += `(Row, Item, Quantity, Cost, 'Subcontractor Fee', 'Material Cost', 'Prelim Cost', 'Final Cost', 'Profit Margin', Notes)`;
-						queryRequest += 'VALUES (\'0\', \'Item Name\', \'0\', \'0\', \'\', \'\', \'0\', \'0\', \'0\', \'\')'
+						queryRequest += `(Row, Item, Quantity, Cost, 'Subcontractor Fee', 'Material Cost', 'Prelim Cost', 'SubFee', 'MatFee', 'Profit Margin', Notes)`;
+						queryRequest += 'VALUES (\'0\', \'Item Name\', \'0\', \'0\', \'\', \'\', \'0\', \'0\', \'0\', \'0\', \'\')';
 						//db.run(`INSERT INTO BudgetEstimate DEFAULT VALUES`, function(err) 
+						console.log(queryRequest);
 						db.run(queryRequest, function(err) 
 						{
 							if (err) 
