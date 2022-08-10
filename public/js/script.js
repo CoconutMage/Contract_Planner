@@ -1,5 +1,8 @@
 let tableData = [];
 let projectPayments = [];
+let projectNotes = [];
+let projectCosts = [];
+let projectPrices = [];
 let removalTableData = [];
 let projectNameToRowID = {};
 var numProjects = 0;
@@ -131,6 +134,13 @@ function websocket()
 	}
 	websocket.updateProjectName = updateProjectName;
 
+	function updateProjectNotes(projectName, notes) 
+	{
+		var wsMessage = "UpdateProjectNotes:" + projectName + ":" + notes;
+		ws.send(wsMessage);
+	}
+	websocket.updateProjectNotes = updateProjectNotes;
+
 	function sendMessageWithData(data)
 	{
 		ws.send(data);
@@ -161,7 +171,6 @@ function NumberToString(data)
 function AddPayment()
 {
 	projectPayments[currentProjectDisplayed] += parseInt(document.getElementById('addPayment').value);
-	console.log(currentProjectDisplayed);
 	document.getElementById("paymentsText").innerHTML = "Payments Recieved: $" + projectPayments[currentProjectDisplayed];
 	websocket.updateProjectPayments(currentProjectDisplayed, projectPayments[currentProjectDisplayed]);
 }
@@ -173,6 +182,9 @@ function DisplayProjectInfo(projectName)
 	document.getElementById("projectOverViewHeader").innerHTML = "Project Overview: " + projectName;
 	document.getElementById("paymentsText").innerHTML = "Payments Recieved: $" + projectPayments[projectName];
 	document.getElementById("genPropButton").setAttribute("onclick", `GenerateProposal('${projectName}')`);
+	document.getElementById("ProjectNotes").innerHTML = projectNotes[projectName];
+	document.getElementById("projectPrice").innerHTML = "Total Price: $" +projectCosts[projectName];
+	document.getElementById("projectCost").innerHTML = "Total Cost: $" +projectPrices[projectName];
 }
 
 function GenerateProposal(projectName)
@@ -253,8 +265,17 @@ function generateTable()
 			projectNameToRowID[processedProjectName] = (i + 1);
 			console.log("Project Name In: " + tableData[i].Payments);
 
+			if (tableData[i].Price) projectPrices[tableData[i].ProjectName] = tableData[i].Price;
+			else projectPrices[tableData[i].ProjectName] = 0;
+
+			if (tableData[i].Cost) projectCosts[tableData[i].ProjectName] = tableData[i].Cost;
+			else projectCosts[tableData[i].ProjectName] = 0;
+
 			if (tableData[i].Payments) projectPayments[tableData[i].ProjectName] = tableData[i].Payments;
 			else projectPayments[tableData[i].ProjectName] = 0;
+
+			if (tableData[i].Notes) projectNotes[tableData[i].ProjectName] = tableData[i].Notes;
+			else projectNotes[tableData[i].ProjectName] = '';
 
 			numProjects += 1;
     	}
@@ -396,4 +417,10 @@ function openProjectBudget(tableName)
 {
 	window.location.href='html/projectBudget.html';
 	sessionStorage.setItem('tableName',`${tableName}`);
+}
+function saveProjectNotes()
+{
+	var secondsBetweenAutosave = 1
+    if (!saveImminent) setTimeout(function() {websocket.updateProjectNotes(currentProjectDisplayed, document.getElementById("ProjectNotes").value); saveImminent=false}, secondsBetweenAutosave * 1000);
+    saveImminent = true;
 }

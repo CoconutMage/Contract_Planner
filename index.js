@@ -399,6 +399,57 @@ function connectWebsocket(server)
 				});
 			}
 
+			if(e.data.includes("UpdateProjectNotes"))
+			{
+				var params = e.data.replace("UpdateProjectNotes:", "").split(':');
+
+				var queryRequest = `UPDATE ProjectList SET Notes='${params[1]}' WHERE ProjectName='${params[0]}'`;
+				console.log(queryRequest);
+				//db.run(`DELETE FROM ? WHERE rowid=?`,[tableName, rowid], function(err) 
+				db.run(queryRequest, function(err) 
+				{
+					if (err) 
+					{
+						queryInProgress = false;
+						return console.log(err.message);
+					}
+				});
+			}
+
+			if(e.data.includes("UpdateProjectPrice"))
+			{
+				var params = e.data.replace("UpdateProjectPrice:", "").split(':');
+
+				var queryRequest = `UPDATE ProjectList SET Price='${params[1]}' WHERE ProjectName='${params[0]}'`;
+				console.log(queryRequest);
+				//db.run(`DELETE FROM ? WHERE rowid=?`,[tableName, rowid], function(err) 
+				db.run(queryRequest, function(err) 
+				{
+					if (err) 
+					{
+						queryInProgress = false;
+						return console.log(err.message);
+					}
+				});
+			}
+
+			if(e.data.includes("UpdateProjectCost"))
+			{
+				var params = e.data.replace("UpdateProjectCost:", "").split(':');
+
+				var queryRequest = `UPDATE ProjectList SET Cost='${params[1]}' WHERE ProjectName='${params[0]}'`;
+				console.log(queryRequest);
+				//db.run(`DELETE FROM ? WHERE rowid=?`,[tableName, rowid], function(err) 
+				db.run(queryRequest, function(err) 
+				{
+					if (err) 
+					{
+						queryInProgress = false;
+						return console.log(err.message);
+					}
+				});
+			}
+
 			if(e.data.includes("UpdateSubTotal"))
 			{
 				var params = e.data.replace("UpdateSubTotal:", "").split(':');
