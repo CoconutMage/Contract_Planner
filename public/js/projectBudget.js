@@ -310,6 +310,7 @@ function splitTableGen()
 	splitDataTableHead = '<tr>';
 	splitDataHtml = '';
 	splitRowNum = 0;
+	totalSplitVal = 0;
 	if (splitData.length == 0)
 	{
 		splitDataTableHead += 
@@ -430,7 +431,7 @@ function addLineItem(data, isNew, itemName = "Item Name")
 		{
 			var prelimCost = data[tableKeys[8]] + data[tableKeys[9]];
 			data[tableKeys[6]] = prelimCost;
-			dataHtml += `<td id = "td" contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">$${prelimCost}</td>`;
+			dataHtml += `<td id = "td" contenteditable="false" style="text-align:center" oninput="tableSaveTimer()">$${prelimCost}</td>`;
 			totalCost += prelimCost;
 		}
 		else if (i == 9) continue;
@@ -447,7 +448,7 @@ function addLineItem(data, isNew, itemName = "Item Name")
 				else finalCost = parseFloat(data[tableKeys[3]]) - parseFloat(data[tableKeys[6]]);
 			}
 			
-			dataHtml += `<td id = "td" contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">$${finalCost}</td>`;
+			dataHtml += `<td id = "td" contenteditable="false" style="text-align:center" oninput="tableSaveTimer()">$${finalCost}</td>`;
 			totalPrice += finalCost;
 		}
 		else dataHtml += `<td id = "td" contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`;
