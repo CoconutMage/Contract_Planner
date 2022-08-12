@@ -168,13 +168,6 @@ function NumberToString(data)
 	return convertedData;
 }
 
-function AddPayment()
-{
-	projectPayments[currentProjectDisplayed] += parseInt(document.getElementById('addPayment').value);
-	document.getElementById("paymentsText").innerHTML = "Payments Recieved: $" + projectPayments[currentProjectDisplayed];
-	websocket.updateProjectPayments(currentProjectDisplayed, projectPayments[currentProjectDisplayed]);
-}
-
 function DisplayProjectInfo(projectName)
 {
 	currentProjectDisplayed = projectName;

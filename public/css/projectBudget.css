@@ -88,18 +88,30 @@ body {
   
   .projectOverview {
     position: absolute;
-    right: 50px;
+    right: 290px;
+    bottom: 200px;
     display: grid;
     grid-template-areas:
     'headerDisplay null'
     'costDisplay null'
     'profitDisplay null'
     'priceDisplay null'
-    'paymentsDisplay null'
-    'newPayment newPaymentButton'
-    'projectsNotes noyef'
-    'projectsNotes noyef'
-    'genProposalButton noyef';
+    'paymentsDisplay null';
+    row-gap: 10px;
+    column-gap: 5px;
+    padding: 10px;
+    width: var(--projectListingWidth);
+  }
+
+  .paymentsOverview {
+    position: absolute;
+    right: 250px;
+    bottom: 100px;
+    display: grid;
+    grid-template-areas:
+    'newPayment newPayment'
+    'newPaymentDate newPaymentDate'
+    'newPaymentButton nuf';
     row-gap: 10px;
     column-gap: 5px;
     padding: 10px;

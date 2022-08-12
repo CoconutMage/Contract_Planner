@@ -305,8 +305,9 @@ function tableGenTest()
 	//tableBody.innerHTML = dataHtml;
 	websocket.updateProjectPrice(tableName.replace("Budget", ""), totalPrice);
 	websocket.updateProjectCost(tableName.replace("Budget", ""), totalCost);
-	document.getElementById("projectCost").innerHTML = "Total Cost: $" + totalCost;
-	document.getElementById("projectPrice").innerHTML = "Total Price: $" + totalPrice;
+	document.getElementById("projectCost").innerHTML = "Total Cost: $" + totalCost.toFixed(2);
+	document.getElementById("projectProfit").innerHTML = "Total Profit: $" + (totalPrice - totalCost).toFixed(2);
+	document.getElementById("projectPrice").innerHTML = "Total Price: $" + totalPrice.toFixed(2);
 }
 
 const splitTableHead = document.getElementById('splitTableHead');
@@ -532,15 +533,14 @@ function paidCheckChange(id)
 
 function tableSaveTimer()
 {
-    var secondsBetweenAutosave = 1
+    var secondsBetweenAutosave = 0.3;
     if (!saveImminent) setTimeout(function() {saveTable();}, secondsBetweenAutosave * 1000);
     saveImminent = true;
 }
 
 function splitTableSaveTimer()
 {
-	console.log("Het");
-    var secondsBetweenAutosave = 1
+    var secondsBetweenAutosave = 0.3;
     if (!saveImminent) setTimeout(function() {saveSplitTable();}, secondsBetweenAutosave * 1000);
     saveImminent = true;
 }
@@ -836,4 +836,11 @@ function bulkDropdownGen()
 	}
 	bulkOrderHtml += `<button onclick="BulkAddRows()">Bulk Add</button>`;
 	bulkOrderDropdown.innerHTML = bulkOrderHtml;
+}
+
+function AddPayment()
+{
+	projectPayments[currentProjectDisplayed] += parseInt(document.getElementById('addPayment').value);
+	//document.getElementById("paymentsText").innerHTML = "Payments Recieved: $" + projectPayments[currentProjectDisplayed];
+	websocket.updateProjectPayments(document.getElementById('addPayment').value, projectPayments[currentProjectDisplayed]);
 }
