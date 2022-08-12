@@ -12,6 +12,16 @@ body {
     z-index: 2;*/
     background: #487878; 
   }
+
+  .bulkAddButton {
+    /*top:11%;
+    left:55%;
+    width:100px;
+    height:40px;
+    position: absolute;
+    z-index: 2;*/
+    background: #487878; 
+  }
   
   .addSubButton {
     width: 20px;
@@ -76,6 +86,26 @@ body {
     display: block;
   }
   
+  .projectOverview {
+    position: absolute;
+    right: 50px;
+    display: grid;
+    grid-template-areas:
+    'headerDisplay null'
+    'costDisplay null'
+    'profitDisplay null'
+    'priceDisplay null'
+    'paymentsDisplay null'
+    'newPayment newPaymentButton'
+    'projectsNotes noyef'
+    'projectsNotes noyef'
+    'genProposalButton noyef';
+    row-gap: 10px;
+    column-gap: 5px;
+    padding: 10px;
+    width: var(--projectListingWidth);
+  }
+
   /* Change color of dropdown links on hover */
   .dropdown-content a:hover {background-color: #ddd}
 

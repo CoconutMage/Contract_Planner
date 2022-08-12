@@ -6,8 +6,8 @@
         <div id="procTableDiv">
             <div class="dropdown">
                 <button onclick="myFunction()" class="dropbtn">Dropdown</button>
-                <input type="text" id="newBulkItem" placeholder="New Project Name" style=="min-width: 100px"></input>
-                <button onclick="AddNewBulkItem()" class="dropbtn">Add</button>
+                <input type="text" id="newBulkItem" placeholder="New bulk item" class = "bulkAddText" style=="min-width: 100px"></input>
+                <button onclick="AddNewBulkItem()" class="bulkAddButton">Add</button>
                 <!--Make this dropdown pull from database table-->
                 <div id="bulkAddDropdown" class="dropdown-content">
 
@@ -30,6 +30,13 @@
                 <thead id = "tableHead"></thead>
                 <tbody id = "tableData"></tbody>
             </table>
+            <div class="projectOverview">
+                <text contenteditable="false" id="projectCost" style="grid-area: costDisplay">Total Cost: $0</text>
+                <text contenteditable="false" id="projectProfit" style="grid-area: profitDisplay">Total Profit: $0</text>
+                <text contenteditable="false" id="projectPrice" style="grid-area: priceDisplay">Total Price: $0</text>
+                <!--<text contenteditable="false" id="paymentsText" style="grid-area: paymentsDisplay">Payments Recieved: $0</text>
+                <input type="text" id="addPayment" placeholder="Add Payments" style="grid-area: newPayment"></input>-->
+            </div>
         </div>
         
         

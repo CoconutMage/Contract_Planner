@@ -171,6 +171,13 @@ function websocket()
 	}
 	websocket.updateProjectCost = updateProjectCost;
 
+	function addbulkItem(item) 
+	{
+		var wsMessage = "AddBulkItem:" + item;
+		ws.send(wsMessage);
+	}
+	websocket.addbulkItem = addbulkItem;
+
 	function updateSubTotal(val, row) 
 	{
 		var wsMessage = "UpdateSubTotal:" + tableName + ":" + val + ":" + row;
@@ -298,6 +305,8 @@ function tableGenTest()
 	//tableBody.innerHTML = dataHtml;
 	websocket.updateProjectPrice(tableName.replace("Budget", ""), totalPrice);
 	websocket.updateProjectCost(tableName.replace("Budget", ""), totalCost);
+	document.getElementById("projectCost").innerHTML = "Total Cost: $" + totalCost;
+	document.getElementById("projectPrice").innerHTML = "Total Price: $" + totalPrice;
 }
 
 const splitTableHead = document.getElementById('splitTableHead');
@@ -444,8 +453,7 @@ function addLineItem(data, isNew, itemName = "Item Name")
 				{
 					finalCost = (1.0 + parseFloat(data[tableKeys[7]])) * parseFloat(data[tableKeys[6]]);
 				}
-				//else finalCost = parseFloat(data[tableKeys[3]]) - parseFloat(data[tableKeys[6]]);
-				else finalCost = parseFloat(data[tableKeys[3]]) - parseFloat(data[tableKeys[6]]);
+				else finalCost = parseFloat(data[tableKeys[3]]);// - parseFloat(data[tableKeys[6]]);
 			}
 			
 			dataHtml += `<td id = "td" contenteditable="false" style="text-align:center" oninput="tableSaveTimer()">$${finalCost}</td>`;
@@ -706,7 +714,7 @@ function displaySplit(data)
 window.onclick = function(event)
 {
 	//if (!event.target.matches('.dropbtn'))
-	if (!document.getElementById('bulkAddDropdown').contains(event.target) && !event.target.matches('.dropbtn'))
+	if (!document.getElementById('bulkAddDropdown').contains(event.target) && (!event.target.matches('.dropbtn') && !event.target.matches('.bulkAddText') && !event.target.matches('.bulkAddButton')))
 	{
 		var dropdowns = document.getElementsByClassName("dropdown-content");
 		var i;
@@ -796,14 +804,22 @@ function BulkAddRows()
 		checkBoxVal[j] = false;
 	}
 }
+function AddNewBulkItem()
+{
+	websocket.addbulkItem(document.getElementById("newBulkItem").value);
+	var item = document.getElementById("newBulkItem").value;
+	bulkData[bulkData.length] = {ItemVal: `${item.replaceAll(" ", "")}`, ItemName: `${item}`};
+	document.getElementById("newBulkItem").value = '';
+	bulkDropdownGen();
+}
 const bulkOrderDropdown = document.getElementById('bulkAddDropdown');
 let bulkOrderHtml = '';
 function bulkDropdownGen()
 {
 	var i = 0;
+	bulkOrderHtml = '';
 	for (data of bulkData)
 	{
-		console.log("bulk: " + bulkData.length);
 		if (i < bulkData.length / 2)
 		{
 			bulkOrderHtml += `<div>`;

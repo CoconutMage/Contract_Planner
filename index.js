@@ -255,6 +255,29 @@ function connectWebsocket(server)
 				});
 			}
 
+			if(e.data.includes("AddBulkItem"))
+			{
+				var params = e.data.replace("AddBulkItem:", "");
+				var queryRequest = `INSERT INTO 'BulkItem' `;
+				queryRequest += `(ItemVal, ItemName)`;
+				queryRequest += ` VALUES ('${params.replaceAll(" ", "")}', '${params}')`;
+
+				console.log(queryRequest);
+				db.run(queryRequest, function(err)
+				{
+					if (err) 
+					{
+						queryInProgress = false;
+					  return console.log(err.message);
+					}
+					else
+					{
+						queryInProgress = false;
+						console.log("Row Added with Data");
+					}
+				});
+			}
+
 			if(e.data.includes("AddRowToTableBudget"))
 			{
 				var params = e.data.replace("AddRowToTableBudget", "");
