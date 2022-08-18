@@ -32,6 +32,7 @@ function connectWebsocket(server)
 	{
 		db = new sqlite3.Database('database.db');
 		console.log("Websocket Connection Successful");
+		console.log(wss.clients[0]);
 		//sendTableData();
 		
 		function sendTableData()
@@ -53,10 +54,10 @@ function connectWebsocket(server)
 						let tableData = [];
 						tableData = result;
 						
-						wss.clients.forEach((client) => 
+						/*wss.clients.forEach((client) => 
 						{
 							client.send(JSON.stringify(tableData));
-						});
+						});*/
 						queryInProgress = false;
 					}
 				});
@@ -106,10 +107,11 @@ function connectWebsocket(server)
 							tableData = result;
 							queryInProgress = false;
 
-							wss.clients.forEach((client) => 
+							ws.send(JSON.stringify(tableData) + '-:-' + e.data.replace("RequestTable", "").split(':')[1]);
+							/*wss.clients.forEach((client) => 
 							{
 								client.send(JSON.stringify(tableData) + '-:-' + e.data.replace("RequestTable", "").split(':')[1]);
-							});
+							});*/
 						}
 					});
 				});
