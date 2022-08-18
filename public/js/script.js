@@ -12,6 +12,8 @@ var saveImminent = false;
 function Start()
 {
 	websocket();
+
+	let userid = Date.now();
 }
 
 function websocket()
@@ -24,6 +26,7 @@ function websocket()
 	{
 		//ws.send('Bazinga');
 		ws.send('RequestTableProjectList' + ':ProhectListing');
+		ws.send("USER_ID: " + userid);
 	};
 
 	ws.onmessage = function (event)

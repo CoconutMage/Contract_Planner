@@ -70,6 +70,11 @@ function connectWebsocket(server)
 			////////////////////////////////////////////////////////////////////////////////////////
 			//Added till Will finishes table serving
 
+			if(e.data.includes("USER_ID: "))
+			{
+				let userId = e.data.replace("USER_ID: ", "");
+			}
+
 			var i = 0;
 			while(queryInProgress && i < 1000)
 			{
