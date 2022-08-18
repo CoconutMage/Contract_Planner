@@ -28,7 +28,9 @@ function websocket()
 
 			console.log(data);
 			tableData = JSON.parse(data);
-			tableGenTest();
+			//tableGenTest();
+
+			generateTable();
 		}
 		else
 		{
@@ -38,9 +40,45 @@ function websocket()
 			console.log(data);
 			splitData = JSON.parse(data);
 			console.log(splitData);
-			splitTableGen();
+			//splitTableGen();
 		}
 	};
+
+	//const tableHead = document.getElementById('TableHead');
+	const tableBody = document.getElementById('tableData');
+
+	let isTableGenerated = false;
+function generateTable() 
+{
+	let tableKeys = Object.keys(tableData[0]);
+	let bazingaHtml = ``;
+  	if (isTableGenerated == false) 
+  	{
+    	for (i = 0; i < tableData.length; i++) 
+		{
+			bazingaHtml += `<td>${tableData[tableKeys[i]]}</td>`
+    	}
+		//top.innerHTML = topDataHtml;
+    	//middle.innerHTML = middleDataHtml;
+		//bottom.innerHTML = bottomDataHtml;
+		tableBody.innerHTML = bazingaHtml;
+    	isTableGenerated = true;
+  	} 
+  	else 
+  	{
+    	isTableGenerated = false;
+		//console.log("Bazinga");
+		/*
+    	document.getElementById("Bazinga").innerHTML = "<tr></tr>";
+    	document.getElementById("Bazinga2").innerHTML = "<tr></tr>";
+    	document.getElementById("Bazinga3").innerHTML = "<tr></tr>";
+		*/
+    	generateTable();
+  	}
+
+  //document.getElementById("Bazinga").innerHTML += '</tr>';
+  //isTableGenerated = true;
+}
 
 	//CUSTOM FUNCTIONS
 	function sendTable(arr) 
