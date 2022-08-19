@@ -186,6 +186,7 @@ function DisplayProjectInfo(projectName)
 function GenerateProposal(projectName)
 {
 	console.log('Generate: ' + projectName);
+	sessionStorage.setItem('tableName',`${projectName}`);
 	window.location.href='html/projectProposal.html';
 }
 
