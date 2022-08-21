@@ -26,7 +26,7 @@ function websocket()
 			data = [];
 			data = event.data.split('-:-')[0];
 
-			console.log(data);
+			//console.log(data);
 			tableData = JSON.parse(data);
 			//tableGenTest();
 
@@ -37,9 +37,9 @@ function websocket()
 			data = [];
 			data = event.data.split('-:-')[0];
 
-			console.log(data);
+			//console.log(data);
 			splitData = JSON.parse(data);
-			console.log(splitData);
+			//console.log(splitData);
 			//splitTableGen();
 		}
 	};
@@ -54,9 +54,15 @@ function generateTable()
 	let bazingaHtml = ``;
   	if (isTableGenerated == false) 
   	{
+		console.log(tableData);
     	for (i = 0; i < tableData.length; i++) 
 		{
-			bazingaHtml += `<td>${tableData[tableKeys[i]]}</td>`
+			if(i==0)
+			{
+				bazingaHtml += `<tr><td>Item Name</td> <td>Final Cost</td> <td>Total Cost</td></tr>`
+			}
+
+			bazingaHtml += `<tr><td>${tableData[i].Item}</td><td>${tableData[i].Cost}</td><td>${tableData[i].Cost}</td></tr>`;
     	}
 		//top.innerHTML = topDataHtml;
     	//middle.innerHTML = middleDataHtml;
