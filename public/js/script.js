@@ -13,7 +13,7 @@ function Start()
 {
 	websocket();
 
-	let userid = Date.now();
+	//let userid = Date.now();
 }
 
 function websocket()
@@ -26,7 +26,7 @@ function websocket()
 	{
 		//ws.send('Bazinga');
 		ws.send('RequestTableProjectList' + ':ProhectListing');
-		ws.send("USER_ID: " + userid);
+		//ws.send("USER_ID: " + userid);
 	};
 
 	ws.onmessage = function (event)
@@ -176,11 +176,11 @@ function DisplayProjectInfo(projectName)
 	currentProjectDisplayed = projectName;
 	document.getElementsByClassName("projectOverview")[0].style.display = "grid";
 	document.getElementById("projectOverViewHeader").innerHTML = "Project Overview: " + projectName;
-	document.getElementById("paymentsText").innerHTML = "Payments Recieved: $" + projectPayments[projectName];
+	document.getElementById("paymentsText").innerHTML = "Payments Recieved: $" + projectPayments[projectName].toFixed(2);
 	document.getElementById("genPropButton").setAttribute("onclick", `GenerateProposal('${projectName}')`);
 	document.getElementById("ProjectNotes").innerHTML = projectNotes[projectName];
-	document.getElementById("projectPrice").innerHTML = "Total Price: $" +projectCosts[projectName];
-	document.getElementById("projectCost").innerHTML = "Total Cost: $" +projectPrices[projectName];
+	document.getElementById("projectPrice").innerHTML = "Total Price: $" +projectCosts[projectName].toFixed(2);
+	document.getElementById("projectCost").innerHTML = "Total Cost: $" +projectPrices[projectName].toFixed(2);
 }
 
 function GenerateProposal(projectName)

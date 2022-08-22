@@ -52,18 +52,36 @@ function generateTable()
 {
 	let tableKeys = Object.keys(tableData[0]);
 	let bazingaHtml = ``;
+	var totalCost = 0;
   	if (isTableGenerated == false) 
   	{
-		console.log(tableData);
-    	for (i = 0; i < tableData.length; i++) 
+    	for (i = 1; i < tableData.length; i++) 
 		{
-			if(i==0)
+			console.log(tableData[i]);
+			if(i==1)
 			{
-				bazingaHtml += `<tr><td>Item Name</td> <td>Final Cost</td> <td>Total Cost</td></tr>`
+				//bazingaHtml += `<tr><td>Item Name</td> <td>Final Cost</td> <td>Total Cost</td></tr>`
+				bazingaHtml += `<tr class="border-bottom"><td><b>Item</b></td><td><b>Final Cost</b></td></tr>`
+				bazingaHtml += `<tr style="height: 15px"><td></td><td></td></tr>`;
 			}
 
-			bazingaHtml += `<tr><td>${tableData[i].Item}</td><td>${tableData[i].Cost}</td><td>${tableData[i].Cost}</td></tr>`;
+			var finalCost = 0.0;
+			if (parseFloat(tableData[i]["Profit Margin"]) != 0)
+			{
+				console.log((tableData[i]["Profit Margin"]));
+				finalCost = (1.0 + parseFloat(tableData[i]["Profit Margin"])) * (parseFloat(tableData[i].SubFee) + parseFloat(tableData[i].MatFee));
+			}
+			else finalCost = parseFloat(tableData[i].Cost);
+			console.log(finalCost);
+			totalCost += finalCost;
+			//bazingaHtml += `<tr><td>${tableData[i].Item}</td><td>${finalCost}</td><td>${tableData[i].Cost}</td></tr>`;
+			bazingaHtml += `<tr class="border-bottom"><td>${tableData[i].Item}</td><td>$${finalCost.toFixed(2)}</td></tr>`;
+			bazingaHtml += `<tr style="height: 18px"><td></td><td></td></tr>`;
     	}
+
+		bazingaHtml += `<tr class="border-bottom"><td></td><td></td></tr>`;
+		bazingaHtml += `<tr class="border-bottom"><td></td><td></td></tr>`;
+		bazingaHtml += `<tr style="height: 50px"><td>Base Price</td><td>$${totalCost.toFixed(2)}</td></tr>`;
 		//top.innerHTML = topDataHtml;
     	//middle.innerHTML = middleDataHtml;
 		//bottom.innerHTML = bottomDataHtml;
