@@ -429,11 +429,11 @@ function addLineItem(data, isNew, itemName = "Item Name")
 
 		//if (i != 0) dataHtml += `<td id = ${cellID} contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`
 		if (i == 0) dataHtml += `<td id = "td" draggable="true" ondragstart="rowDragStart(event)" ondragover="allowDrop(event)" ondrop="rowDrop(event)" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`;
-		else if (i == 3) dataHtml += `<td id = "td" contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">$${keyName}</td>`;
+		else if (i == 3) dataHtml += `<td id = "td" contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">$${keyName.toFixed(2)}</td>`;
 		else if (i == 4 || i ==5)
 		{
 			dataHtml += `<td id = "td" contenteditable="false" style="text-align:center" oninput="tableSaveTimer()">`;
-			if (data != null) dataHtml += `<text id="splitText${keyName}" style="padding-right:30px; padding-left:30px">$${data[tableKeys[i + 4]]}`;
+			if (data != null) dataHtml += `<text id="splitText${keyName}" style="padding-right:30px; padding-left:30px">$${data[tableKeys[i + 4]].toFixed(2)}`;
 			else dataHtml += `<text id="splitText${keyName}" style="padding-right:30px; padding-left:30px">$0`;
 			dataHtml += `  <button type="button" id="splitBut${keyName}" class="tableCellDropdown" onclick="displaySplit('${keyName}')"></button></text></td>`;
 		}
@@ -441,7 +441,7 @@ function addLineItem(data, isNew, itemName = "Item Name")
 		{
 			var prelimCost = data[tableKeys[8]] + data[tableKeys[9]];
 			data[tableKeys[6]] = prelimCost;
-			dataHtml += `<td id = "td" contenteditable="false" style="text-align:center" oninput="tableSaveTimer()">$${prelimCost}</td>`;
+			dataHtml += `<td id = "td" contenteditable="false" style="text-align:center" oninput="tableSaveTimer()">$${prelimCost.toFixed(2)}</td>`;
 			totalCost += prelimCost;
 		}
 		else if (i == 9) continue;
@@ -457,7 +457,7 @@ function addLineItem(data, isNew, itemName = "Item Name")
 				else finalCost = parseFloat(data[tableKeys[3]]);// - parseFloat(data[tableKeys[6]]);
 			}
 			
-			dataHtml += `<td id = "td" contenteditable="false" style="text-align:center" oninput="tableSaveTimer()">$${finalCost}</td>`;
+			dataHtml += `<td id = "td" contenteditable="false" style="text-align:center" oninput="tableSaveTimer()">$${finalCost.toFixed(2)}</td>`;
 			totalPrice += finalCost;
 		}
 		else dataHtml += `<td id = "td" contenteditable="true" style="text-align:center" oninput="tableSaveTimer()">${keyName}</td>`;
